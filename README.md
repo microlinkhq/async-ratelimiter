@@ -8,7 +8,7 @@
 [![NPM Status](https://img.shields.io/npm/dm/async-ratelimiter.svg?style=flat-square)](https://www.npmjs.org/package/async-ratelimiter)
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square)](https://paypal.me/microlinkhq)
 
-> Rate limit made simple, easy, async. Based on [https://github.com/tj/node-ratelimiter](ratelimiter).
+> Rate limit made simple, easy, async. Based on [ratelimiter](https://github.com/tj/node-ratelimiter).
 
 > **NOTE**: It requires Redis 2.6.12+.
 
