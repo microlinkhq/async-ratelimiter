@@ -18,7 +18,7 @@ module.exports = class Limiter {
     assert(id, 'id required')
 
     const { db, duration, max } = this
-    const key = `${this.namespace}:${this.id}`
+    const key = `${this.namespace}:${id}`
     const now = microtime.now()
     const start = now - duration * 1000
 
