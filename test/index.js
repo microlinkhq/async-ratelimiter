@@ -2,7 +2,7 @@
 
 'use strict'
 
-require('should')
+const should = require('should')
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -25,7 +25,7 @@ const RateLimiter = require('..')
           db: db
         })
         const res = await limit.get()
-        res.total.should.equal(5)
+        should(res.total).equal(5)
       })
     })
 
@@ -40,11 +40,11 @@ const RateLimiter = require('..')
 
         let res
         res = await limit.get()
-        res.remaining.should.equal(5)
+        should(res.remaining).equal(5)
         res = await limit.get()
-        res.remaining.should.equal(4)
+        should(res.remaining).equal(4)
         res = await limit.get()
-        res.remaining.should.equal(3)
+        should(res.remaining).equal(3)
       })
     })
 
@@ -58,7 +58,9 @@ const RateLimiter = require('..')
         })
         const res = await limit.get()
         let left = res.reset - Date.now() / 1000
-        left.should.be.below(60).and.be.greaterThan(0)
+        should(left)
+          .be.below(60)
+          .and.be.greaterThan(0)
       })
     })
 
@@ -72,11 +74,11 @@ const RateLimiter = require('..')
 
         let res
         res = await limit.get()
-        res.remaining.should.equal(2)
+        should(res.remaining).equal(2)
         res = await limit.get()
-        res.remaining.should.equal(1)
+        should(res.remaining).equal(1)
         res = await limit.get()
-        res.remaining.should.equal(0)
+        should(res.remaining).equal(0)
       })
     })
 
@@ -92,15 +94,15 @@ const RateLimiter = require('..')
 
         let res
         res = await limit.get()
-        res.remaining.should.equal(2)
+        should(res.remaining).equal(2)
         res = await limit.get()
-        res.remaining.should.equal(1)
+        should(res.remaining).equal(1)
 
         await delay(3000)
         res = await limit.get()
         let left = res.reset - Date.now() / 1000
-        left.should.be.below(2)
-        res.remaining.should.equal(2)
+        should(left).be.below(2)
+        should(res.remaining).equal(2)
       })
     })
 
@@ -115,9 +117,9 @@ const RateLimiter = require('..')
 
         let res
         res = await limit.get()
-        res.remaining.should.equal(2)
+        should(res.remaining).equal(2)
         res = await limit.get()
-        res.remaining.should.equal(1)
+        should(res.remaining).equal(1)
       })
       it('updating the count should keep all TTLs in sync', async function () {
         let limit = new RateLimiter({
@@ -156,11 +158,11 @@ const RateLimiter = require('..')
         db.setex('limit:something:count', -1, 1, async function () {
           let res
           res = await limit.get()
-          res.remaining.should.equal(2)
+          should(res.remaining).equal(2)
           res = await limit.get()
-          res.remaining.should.equal(1)
+          should(res.remaining).equal(1)
           res = await limit.get()
-          res.remaining.should.equal(0)
+          should(res.remaining).equal(0)
         })
       })
     })
@@ -201,12 +203,12 @@ const RateLimiter = require('..')
                 return r1[1].remaining < r2[1].remaining
               })
               responses.forEach(function (res) {
-                res[1].remaining.should.equal(left < 0 ? 0 : left)
+                should(res[1].remaining).equal(left < 0 ? 0 : left)
                 left--
               })
 
               for (let i = max - 1; i < clientsCount; ++i) {
-                responses[i][1].remaining.should.equal(0)
+                should(responses[i][1].remaining).equal(0)
               }
             }
           }
@@ -214,7 +216,7 @@ const RateLimiter = require('..')
 
         // Warm up and prepare the data.
         let res = await limits[0].get()
-        res.remaining.should.equal(left--)
+        should(res.remaining).equal(left--)
 
         // Simulate multiple concurrent requests.
         limits.forEach(function (limit) {
@@ -238,7 +240,7 @@ const RateLimiter = require('..')
         const times = Array.from({ length: max }, (value, index) => index)
         const limits = await Promise.all(times.map(() => limiter.get()))
         limits.forEach(function (limit) {
-          limit.remaining.should.equal(max--)
+          should(limit.remaining).equal(max--)
         })
       })
     })
