@@ -78,6 +78,13 @@ Default: `3600000`
 
 How long keep records of requests in milliseconds.
 
+##### namespace
+
+Type: `string`<br>
+Default: `'limit'`
+
+The prefix used for compound the key.
+
 ##### id
 
 Type: `string`
