@@ -10,14 +10,11 @@ const RateLimiter = require('..')
 ;['ioredis'].forEach(function (redisModuleName) {
   let redisModule = require(redisModuleName)
   let db = require(redisModuleName).createClient()
+
   describe('Limiter with ' + redisModuleName, function () {
-    beforeEach(function (done) {
-      db.keys('limit:*', function (err, keys) {
-        if (err) return done(err)
-        if (!keys.length) return done()
-        let args = keys.concat(done)
-        db.del.apply(db, args)
-      })
+    beforeEach(async function () {
+      const keys = await db.keys('limit:*')
+      await Promise.all(keys.map(key => db.del(key)))
     })
 
     describe('.total', function () {

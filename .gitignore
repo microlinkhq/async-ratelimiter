@@ -21,6 +21,7 @@ package-lock.json
 .idea
 *sublime*
 nbproject
+dump.rdb
 
 ############################
 # Tests
