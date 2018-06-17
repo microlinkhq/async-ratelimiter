@@ -10,7 +10,7 @@
 
 > Rate limit made simple, easy, async.
 
-> NOTE: It requires Redis 2.6.12+
+> **NOTE**: It requires Redis 2.6.12+.
 
 ## Install
 
