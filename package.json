@@ -9,6 +9,112 @@
     "name": "microlink.io",
     "url": "https://microlink.io"
   },
+  "contributors": [
+    {
+      "name": "Noam Shemesh",
+      "email": "noam@bigpanda.io"
+    },
+    {
+      "name": "TJ Holowaychuk",
+      "email": "tj@vision-media.ca"
+    },
+    {
+      "name": "Kiko Beats",
+      "email": "josefrancisco.verdu@gmail.com"
+    },
+    {
+      "name": "haoxin",
+      "email": "coderhaoxin@outlook.com"
+    },
+    {
+      "name": "Krishna Kalubandi",
+      "email": "krishnakalubandi@gmail.com"
+    },
+    {
+      "name": "Christian Neuhäuser",
+      "email": "chris@type10.com"
+    },
+    {
+      "name": "luin",
+      "email": "i@zihua.li"
+    },
+    {
+      "name": "João Barbosa",
+      "email": "joao@uphold.com"
+    },
+    {
+      "name": "Sebastian Yandun",
+      "email": "svyandun@gmail.com"
+    },
+    {
+      "name": "FG Ribreau",
+      "email": "github@fgribreau.com"
+    },
+    {
+      "name": "Esen Sagynov",
+      "email": "kadishmal@gmail.com"
+    },
+    {
+      "name": "waleed samy",
+      "email": "waleed_samy@ymail.com"
+    },
+    {
+      "name": "Rui Marinho",
+      "email": "rpm@seegno.com"
+    },
+    {
+      "name": "Noam Shemesh",
+      "email": "noam@bigpanda.io"
+    },
+    {
+      "name": "TJ Holowaychuk",
+      "email": "tj@vision-media.ca"
+    },
+    {
+      "name": "Kiko Beats",
+      "email": "josefrancisco.verdu@gmail.com"
+    },
+    {
+      "name": "haoxin",
+      "email": "coderhaoxin@outlook.com"
+    },
+    {
+      "name": "Krishna Kalubandi",
+      "email": "krishnakalubandi@gmail.com"
+    },
+    {
+      "name": "Christian Neuhäuser",
+      "email": "chris@type10.com"
+    },
+    {
+      "name": "luin",
+      "email": "i@zihua.li"
+    },
+    {
+      "name": "João Barbosa",
+      "email": "joao@uphold.com"
+    },
+    {
+      "name": "Sebastian Yandun",
+      "email": "svyandun@gmail.com"
+    },
+    {
+      "name": "FG Ribreau",
+      "email": "github@fgribreau.com"
+    },
+    {
+      "name": "Esen Sagynov",
+      "email": "kadishmal@gmail.com"
+    },
+    {
+      "name": "waleed samy",
+      "email": "waleed_samy@ymail.com"
+    },
+    {
+      "name": "Rui Marinho",
+      "email": "rpm@seegno.com"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microlinkhq/async-ratelimiter.git"

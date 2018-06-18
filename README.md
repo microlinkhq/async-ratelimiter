@@ -6,7 +6,6 @@
 [![Dependency status](https://img.shields.io/david/microlinkhq/async-ratelimiter.svg?style=flat-square)](https://david-dm.org/microlinkhq/async-ratelimiter)
 [![Dev Dependencies Status](https://img.shields.io/david/dev/microlinkhq/async-ratelimiter.svg?style=flat-square)](https://david-dm.org/microlinkhq/async-ratelimiter#info=devDependencies)
 [![NPM Status](https://img.shields.io/npm/dm/async-ratelimiter.svg?style=flat-square)](https://www.npmjs.org/package/async-ratelimiter)
-[![Donate](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square)](https://paypal.me/microlinkhq)
 
 > Rate limit made simple, easy, async. Based on [ratelimiter](https://github.com/tj/node-ratelimiter).
 
