@@ -1,3 +1,13 @@
+<a name="1.0.2"></a>
+## 1.0.2 (2018-06-18)
+
+* Remove badge, add contributors ([c252c7b](https://github.com/microlinkhq/async-ratelimiter/commit/c252c7b))
+* Update README.md ([5b5d374](https://github.com/microlinkhq/async-ratelimiter/commit/5b5d374))
+* Update README.md ([e2f1868](https://github.com/microlinkhq/async-ratelimiter/commit/e2f1868))
+* Update README.md ([68130c2](https://github.com/microlinkhq/async-ratelimiter/commit/68130c2))
+
+
+
 <a name="1.0.1"></a>
 ## 1.0.1 (2018-06-17)
 
