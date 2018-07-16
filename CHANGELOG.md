@@ -1,3 +1,12 @@
+<a name="1.1.0"></a>
+# 1.1.0 (2018-07-16)
+
+* allow custom duration in .get ([f3edcf2](https://github.com/microlinkhq/async-ratelimiter/commit/f3edcf2))
+* allow custom limits ([a94f501](https://github.com/microlinkhq/async-ratelimiter/commit/a94f501))
+* keep responsibility of tests ([2fd9903](https://github.com/microlinkhq/async-ratelimiter/commit/2fd9903))
+
+
+
 <a name="1.0.2"></a>
 ## 1.0.2 (2018-06-18)
 
