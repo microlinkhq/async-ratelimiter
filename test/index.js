@@ -244,5 +244,41 @@ const RateLimiter = require('..')
         })
       })
     })
+
+    describe('when get is called with max option', function () {
+      it('should represent the custom total limit per reset period', async function () {
+        const limit = new RateLimiter({
+          max: 5,
+          id: 'something',
+          db
+        })
+
+        let res
+        res = await limit.get({ max: 10 })
+        should(res.remaining).equal(10)
+        res = await limit.get({ max: 10 })
+        should(res.remaining).equal(9)
+        res = await limit.get({ max: 10 })
+        should(res.remaining).equal(8)
+      })
+
+      it('should take the default limit as fallback', async function () {
+        const limit = new RateLimiter({
+          max: 5,
+          id: 'something',
+          db
+        })
+
+        let res
+        res = await limit.get({ max: 10 })
+        should(res.remaining).equal(10)
+        res = await limit.get({ max: 10 })
+        should(res.remaining).equal(9)
+        res = await limit.get()
+        should(res.remaining).equal(3)
+        res = await limit.get()
+        should(res.remaining).equal(2)
+      })
+    })
   })
 })

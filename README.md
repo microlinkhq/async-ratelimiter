@@ -107,6 +107,12 @@ Type: `string`
 
 The identifier to limit against (typically a user id).
 
+##### max
+
+Type: `number`
+
+The maximum number of requests within `duration`. If provided, it overrides the default `max` value. This is useful for custom limits that differ between IDs.
+
 ## License
 
 **async-ratelimiter** © [microlink.io](https://microlink.io), released under the [MIT](https://github.com/microlinkhq/async-ratelimiter/blob/master/LICENSE.md) License.<br>
