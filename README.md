@@ -113,6 +113,13 @@ Type: `number`
 
 The maximum number of requests within `duration`. If provided, it overrides the default `max` value. This is useful for custom limits that differ between IDs.
 
+##### duration
+
+Type: `number`
+
+How long keep records of requests in milliseconds. If provided, it overrides the default `duration` value.
+
+
 ## License
 
 **async-ratelimiter** © [microlink.io](https://microlink.io), released under the [MIT](https://github.com/microlinkhq/async-ratelimiter/blob/master/LICENSE.md) License.<br>

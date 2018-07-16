@@ -280,5 +280,44 @@ const RateLimiter = require('..')
         should(res.remaining).equal(2)
       })
     })
+
+    describe('when get is called with duration', function () {
+      it('should reset after custom duration', async function () {
+        const limit = new RateLimiter({
+          db,
+          max: 5,
+          id: 'something'
+        })
+
+        const res = await limit.get({ duration: 10000 })
+        should(res.remaining).equal(5)
+        const left = res.reset - Date.now() / 1000
+        should(left).be.below(10)
+      })
+
+      it('should take the default duration as fallback', async function () {
+        const limit = new RateLimiter({
+          db,
+          max: 5,
+          id: 'something',
+          duration: 25000
+        })
+
+        let res
+        let left
+
+        res = await limit.get({ duration: 10000 })
+        should(res.remaining).equal(5)
+        left = res.reset - Date.now() / 1000
+        should(left).be.below(10)
+
+        res = await limit.get()
+        should(res.remaining).equal(4)
+        left = res.reset - Date.now() / 1000
+        should(left)
+          .be.below(25)
+          .and.be.above(10)
+      })
+    })
   })
 })

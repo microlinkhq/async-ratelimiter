@@ -14,11 +14,12 @@ module.exports = class Limiter {
     this.namespace = namespace
   }
 
-  async get ({ id = this.id, max = this.max } = {}) {
+  async get ({ id = this.id, max = this.max, duration = this.duration } = {}) {
     assert(id, 'id required')
     assert(max, 'max required')
+    assert(duration, 'duration required')
 
-    const { db, duration } = this
+    const { db } = this
     const key = `${this.namespace}:${id}`
     const now = microtime.now()
     const start = now - duration * 1000
