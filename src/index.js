@@ -33,8 +33,8 @@ module.exports = class Limiter {
       .pexpire([key, duration])
       .exec()
 
-    const count = parseInt(Array.isArray(res[0]) ? res[1][1] : res[1])
-    const oldest = parseInt(Array.isArray(res[0]) ? res[3][1] : res[3])
+    const count = parseInt(res[1][1])
+    const oldest = parseInt(res[3][1])
 
     return {
       remaining: count < max ? max - count : 0,
