@@ -1,3 +1,10 @@
+<a name="1.1.1"></a>
+## 1.1.1 (2018-07-18)
+
+* Remove unnecessary check ([f09bff9](https://github.com/microlinkhq/async-ratelimiter/commit/f09bff9))
+
+
+
 <a name="1.1.0"></a>
 # 1.1.0 (2018-07-16)
 

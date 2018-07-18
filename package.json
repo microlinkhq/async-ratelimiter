@@ -2,7 +2,7 @@
   "name": "async-ratelimiter",
   "description": "Rate limit made simple, easy, async.",
   "homepage": "https://documentup.com/microlinkhq/async-ratelimiter",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "src/index.js",
   "author": {
     "email": "hello@microlink.io",
@@ -15,8 +15,8 @@
       "email": "noam@bigpanda.io"
     },
     {
-      "name": "Noam Shemesh",
-      "email": "noam@bigpanda.io"
+      "name": "TJ Holowaychuk",
+      "email": "tj@vision-media.ca"
     },
     {
       "name": "Kiko Beats",
@@ -63,8 +63,8 @@
       "email": "rpm@seegno.com"
     },
     {
-      "name": "TJ Holowaychuk",
-      "email": "tj@vision-media.ca"
+      "name": "Noam Shemesh",
+      "email": "noam@bigpanda.io"
     },
     {
       "name": "TJ Holowaychuk",
