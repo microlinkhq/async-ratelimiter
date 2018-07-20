@@ -26,7 +26,7 @@ module.exports = class Limiter {
 
     const res = await db
       .multi()
-      .zrange([key, 0, start, 'WITHSCORES'])
+      .zremrangebyscore([key, 0, start])
       .zcard([key])
       .zadd([key, now, now])
       .zrange([key, 0, 0])
