@@ -30,15 +30,19 @@ module.exports = class Limiter {
       .zcard([key])
       .zadd([key, now, now])
       .zrange([key, 0, 0])
+      .zrange([key, -max, -max])
       .pexpire([key, duration])
       .exec()
 
     const count = parseInt(res[1][1])
     const oldest = parseInt(res[3][1])
+    const oldestInRange = parseInt(res[4][1])
+    const resetMicro =
+      (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
 
     return {
       remaining: count < max ? max - count : 0,
-      reset: Math.floor((oldest + duration * 1000) / 1000000),
+      reset: Math.floor(resetMicro / 1000000),
       total: max
     }
   }

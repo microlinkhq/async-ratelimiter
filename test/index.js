@@ -80,6 +80,22 @@ const RateLimiter = require('..')
         res = await limit.get()
         should(res.remaining).equal(0)
       })
+
+      it('should return an increasing reset time after each call', async function () {
+        let limit = new RateLimiter({
+          max: 2,
+          id: 'something',
+          db: db
+        })
+
+        await limit.get()
+        await limit.get()
+        await delay(1000)
+        const { reset: originalReset } = await limit.get()
+        await delay(1000)
+        const { reset } = await limit.get()
+        should(reset).be.greaterThan(originalReset)
+      })
     })
 
     describe('when the duration is exceeded', function () {
