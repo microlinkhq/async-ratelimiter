@@ -319,5 +319,27 @@ const RateLimiter = require('..')
           .and.be.above(10)
       })
     })
+
+    describe('when having old data earlier then the duration ', function () {
+      it('the old request data eariler then the duration time should be ignore', async function () {
+        this.timeout(20000)
+        const limit = new RateLimiter({
+          db,
+          max: 5,
+          id: 'something',
+          duration: 5000
+        })
+        let res = await limit.get()
+        should(res.remaining).equal(5)
+
+        let times = 6
+        do {
+          res = await limit.get()
+          ;(res.remaining > 0).should.be.true()
+          await delay(2000)
+          times--
+        } while (times > 0)
+      })
+    })
   })
 })
