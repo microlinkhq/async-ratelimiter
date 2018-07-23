@@ -1,3 +1,11 @@
+<a name="1.1.2"></a>
+## 1.1.2 (2018-07-23)
+
+* Closes #6 ([6614d30](https://github.com/microlinkhq/async-ratelimiter/commit/6614d30)), closes [#6](https://github.com/microlinkhq/async-ratelimiter/issues/6)
+* old data test and delete the old ones by score ([31beaed](https://github.com/microlinkhq/async-ratelimiter/commit/31beaed))
+
+
+
 <a name="1.1.1"></a>
 ## 1.1.1 (2018-07-18)
 
