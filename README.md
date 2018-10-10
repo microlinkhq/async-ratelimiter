@@ -41,7 +41,7 @@ const apiQuota = async (req, res, handler) => {
   }
 
   return !limit.remaining
-    ? sendFail({req,
+    ? sendFail({ req,
       res,
       code: HTTPStatus.TOO_MANY_REQUESTS,
       message: MESSAGES.RATE_LIMIT_EXCEDEED()
