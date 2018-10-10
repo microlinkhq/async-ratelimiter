@@ -5,7 +5,7 @@
 [![Coverage Status](https://img.shields.io/coveralls/microlinkhq/async-ratelimiter.svg?style=flat-square)](https://coveralls.io/github/microlinkhq/async-ratelimiter)
 [![Dependency status](https://img.shields.io/david/microlinkhq/async-ratelimiter.svg?style=flat-square)](https://david-dm.org/microlinkhq/async-ratelimiter)
 [![Dev Dependencies Status](https://img.shields.io/david/dev/microlinkhq/async-ratelimiter.svg?style=flat-square)](https://david-dm.org/microlinkhq/async-ratelimiter#info=devDependencies)
-[![NPM Status](https://img.shields.io/npm/dm/async-ratelimiter.svg?style=flat-square)](https://www.npmjs.org/package/async-ratelimiter) [![Greenkeeper badge](https://badges.greenkeeper.io/microlinkhq/async-ratelimiter.svg)](https://greenkeeper.io/)
+[![NPM Status](https://img.shields.io/npm/dm/async-ratelimiter.svg?style=flat-square)](https://www.npmjs.org/package/async-ratelimiter)
 
 > Rate limit made simple, easy, async. Based on [ratelimiter](https://github.com/tj/node-ratelimiter).
 
