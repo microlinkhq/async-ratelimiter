@@ -119,6 +119,12 @@ Type: `number`
 
 How long keep records of requests in milliseconds. If provided, it overrides the default `duration` value.
 
+##### decrease
+
+Type: `boolean`
+
+When set to `false`, the remaining number of calls is not decreased. This is useful for just reading the remaining calls without actually decreasing them.
+
 
 ## License
 

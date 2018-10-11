@@ -357,5 +357,24 @@ const RateLimiter = require('..')
         } while (times > 0)
       })
     })
+
+    describe('when get is called with decrease == false', function () {
+      it('should not decrement the remaining value', async function () {
+        let limit = new RateLimiter({
+          max: 5,
+          duration: 100000,
+          id: 'something',
+          db: db
+        })
+
+        let res
+        res = await limit.get({ decrease: false })
+        should(res.remaining).equal(5)
+        res = await limit.get({ decrease: false })
+        should(res.remaining).equal(5)
+        res = await limit.get({ decrease: false })
+        should(res.remaining).equal(5)
+      })
+    })
   })
 })
