@@ -4,7 +4,6 @@
   "homepage": "https://documentup.com/microlinkhq/async-ratelimiter",
   "version": "1.1.2",
   "main": "src/index.js",
-  "typings": "./index.d.ts",
   "author": {
     "email": "hello@microlink.io",
     "name": "microlink.io",
@@ -132,53 +131,86 @@
     "ratelimit"
   ],
   "devDependencies": {
+    "@commitlint/cli": "latest",
+    "@commitlint/config-conventional": "latest",
+    "ci-publish": "latest",
+    "conventional-github-releaser": "latest",
     "coveralls": "latest",
     "finepack": "latest",
+    "git-authors-cli": "latest",
     "git-dirty": "latest",
     "husky": "latest",
     "ioredis": "latest",
     "lint-staged": "latest",
     "mocha": "latest",
+    "npm-check-updates": "latest",
     "nyc": "latest",
     "prettier-standard": "latest",
     "should": "latest",
     "standard": "11",
-    "standard-markdown": "latest"
+    "standard-markdown": "latest",
+    "standard-version": "latest"
   },
   "engines": {
     "node": ">= 8"
   },
   "files": [
-    "src",
-    "index.d.ts"
+    "index.d.ts",
+    "src"
   ],
   "scripts": {
     "clean": "rm -rf node_modules",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "lint": "standard-markdown && standard",
+    "postrelease": "npm run release:tags && npm run release:github && ci-publish",
     "precommit": "lint-staged",
+    "prerelease": "npm run update:check && git-authors-cli",
     "pretest": "npm run lint",
     "pretty": "prettier-standard index.js {core,test,bin,scripts}/**/*.js --single-quote --print-width 100",
-    "test": "nyc mocha"
+    "release": "git add package.json && standard-version -a",
+    "release:github": "conventional-github-releaser -p angular",
+    "release:tags": "git push --follow-tags origin HEAD:master",
+    "test": "nyc mocha",
+    "update": "ncu -a",
+    "update:check": "ncu -- --error-level 2"
   },
   "license": "MIT",
-  "lint-staged": {
-    "package.json": [
-      "finepack",
-      "git add"
-    ],
-    "*.js": [
-      "prettier-standard",
-      "git add"
-    ],
-    "*.md": [
-      "standard-markdown",
-      "git add"
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "package.json": [
+        "finepack",
+        "git add"
+      ],
+      "*.js": [
+        "prettier-standard",
+        "git add"
+      ],
+      "*.md": [
+        "standard-markdown",
+        "git add"
+      ]
+    }
   },
   "standard": {
     "env": [
       "mocha"
     ]
-  }
+  },
+  "standard-version": {
+    "scripts": {
+      "prechangelog": "git-authors-cli"
+    }
+  },
+  "typings": "./index.d.ts"
 }
