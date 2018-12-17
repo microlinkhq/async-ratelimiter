@@ -149,7 +149,8 @@
     "node": ">= 8"
   },
   "files": [
-    "src"
+    "src",
+    "index.d.ts"
   ],
   "scripts": {
     "clean": "rm -rf node_modules",
