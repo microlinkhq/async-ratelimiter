@@ -24,20 +24,21 @@ module.exports = class Limiter {
     assert(max, 'max required')
     assert(duration, 'duration required')
 
-    const { db } = this
     const key = `${this.namespace}:${id}`
     const now = microtime.now()
     const start = now - duration * 1000
 
-    const pipeline = db.multi()
-    pipeline.zremrangebyscore([key, 0, start])
-    pipeline.zcard([key])
-    if (decrease) pipeline.zadd([key, now, now])
-    pipeline.zrange([key, 0, 0])
-    pipeline.zrange([key, -max, -max])
-    pipeline.pexpire([key, duration])
-    const res = await pipeline.exec()
+    const operations = [
+      ['zremrangebyscore', key, 0, start],
+      ['zcard', key],
+      ['zrange', key, 0, 0],
+      ['zrange', key, -max, -max],
+      ['pexpire', key, duration]
+    ]
 
+    if (decrease) operations.splice(2, 0, ['zadd', key, now, now])
+
+    const res = await this.db.multi(operations).exec()
     const count = parseInt(res[1][1])
     const oldest = parseInt(res[decrease ? 3 : 2][1])
     const oldestInRange = parseInt(res[decrease ? 4 : 3][1])

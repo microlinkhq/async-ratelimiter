@@ -19,10 +19,10 @@ const RateLimiter = require('..')
 
     describe('.total', function () {
       it('should represent the total limit per reset period', async function () {
-        let limit = new RateLimiter({
+        const limit = new RateLimiter({
           max: 5,
           id: 'something',
-          db: db
+          db
         })
         const res = await limit.get()
         should(res.total).equal(5)
@@ -31,11 +31,11 @@ const RateLimiter = require('..')
 
     describe('.remaining', function () {
       it('should represent the number of requests remaining in the reset period', async function () {
-        let limit = new RateLimiter({
+        const limit = new RateLimiter({
           max: 5,
           duration: 100000,
           id: 'something',
-          db: db
+          db
         })
 
         let res
@@ -50,11 +50,11 @@ const RateLimiter = require('..')
 
     describe('.reset', function () {
       it('should represent the next reset time in UTC epoch seconds', async function () {
-        let limit = new RateLimiter({
+        const limit = new RateLimiter({
           max: 5,
           duration: 60000,
           id: 'something',
-          db: db
+          db
         })
         const res = await limit.get()
         let left = res.reset - Date.now() / 1000
@@ -66,10 +66,10 @@ const RateLimiter = require('..')
 
     describe('when the limit is exceeded', function () {
       it('should retain .remaining at 0', async function () {
-        let limit = new RateLimiter({
+        const limit = new RateLimiter({
           max: 2,
           id: 'something',
-          db: db
+          db
         })
 
         let res
@@ -82,10 +82,10 @@ const RateLimiter = require('..')
       })
 
       it('should return an increasing reset time after each call', async function () {
-        let limit = new RateLimiter({
+        const limit = new RateLimiter({
           max: 2,
           id: 'something',
-          db: db
+          db
         })
 
         await limit.get()
@@ -101,11 +101,11 @@ const RateLimiter = require('..')
     describe('when the duration is exceeded', function () {
       it('should reset', async function () {
         this.timeout(5000)
-        let limit = new RateLimiter({
+        const limit = new RateLimiter({
           duration: 2000,
           max: 2,
           id: 'something',
-          db: db
+          db
         })
 
         let res
@@ -124,11 +124,11 @@ const RateLimiter = require('..')
 
     describe('when multiple successive calls are made', function () {
       it('the next calls should not create again the limiter in Redis', async function () {
-        let limit = new RateLimiter({
+        const limit = new RateLimiter({
           duration: 10000,
           max: 2,
           id: 'something',
-          db: db
+          db
         })
 
         let res
@@ -138,11 +138,11 @@ const RateLimiter = require('..')
         should(res.remaining).equal(1)
       })
       it('updating the count should keep all TTLs in sync', async function () {
-        let limit = new RateLimiter({
+        const limit = new RateLimiter({
           duration: 10000,
           max: 2,
           id: 'something',
-          db: db
+          db
         })
         await limit.get() // All good here.
         await limit.get()
@@ -164,11 +164,11 @@ const RateLimiter = require('..')
 
     describe('when trying to decrease before setting value', function () {
       it('should create with ttl when trying to decrease', async function () {
-        let limit = new RateLimiter({
+        const limit = new RateLimiter({
           duration: 10000,
           max: 2,
           id: 'something',
-          db: db
+          db
         })
 
         db.setex('limit:something:count', -1, 1, async function () {
@@ -187,7 +187,7 @@ const RateLimiter = require('..')
       let clientsCount = 7
       let max = 5
       let left = max
-      let limits = []
+      const limits = []
 
       for (let i = 0; i < clientsCount; ++i) {
         limits.push(
@@ -360,11 +360,11 @@ const RateLimiter = require('..')
 
     describe('when get is called with decrease == false', function () {
       it('should not decrement the remaining value', async function () {
-        let limit = new RateLimiter({
+        const limit = new RateLimiter({
           max: 5,
           duration: 100000,
           id: 'something',
-          db: db
+          db
         })
 
         let res
