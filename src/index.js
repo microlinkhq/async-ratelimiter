@@ -14,7 +14,12 @@ module.exports = class Limiter {
     this.namespace = namespace
   }
 
-  async get ({ id = this.id, max = this.max, duration = this.duration } = {}) {
+  async get ({
+    id = this.id,
+    max = this.max,
+    duration = this.duration,
+    decrease = true
+  } = {}) {
     assert(id, 'id required')
     assert(max, 'max required')
     assert(duration, 'duration required')
@@ -24,19 +29,18 @@ module.exports = class Limiter {
     const now = microtime.now()
     const start = now - duration * 1000
 
-    const res = await db
-      .multi()
-      .zremrangebyscore([key, 0, start])
-      .zcard([key])
-      .zadd([key, now, now])
-      .zrange([key, 0, 0])
-      .zrange([key, -max, -max])
-      .pexpire([key, duration])
-      .exec()
+    const pipeline = db.multi()
+    pipeline.zremrangebyscore([key, 0, start])
+    pipeline.zcard([key])
+    if (decrease) pipeline.zadd([key, now, now])
+    pipeline.zrange([key, 0, 0])
+    pipeline.zrange([key, -max, -max])
+    pipeline.pexpire([key, duration])
+    const res = await pipeline.exec()
 
     const count = parseInt(res[1][1])
-    const oldest = parseInt(res[3][1])
-    const oldestInRange = parseInt(res[4][1])
+    const oldest = parseInt(res[decrease ? 3 : 2][1])
+    const oldestInRange = parseInt(res[decrease ? 4 : 3][1])
     const resetMicro =
       (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
 
