@@ -25,13 +25,15 @@ A simple middleware implementation for whatever HTTP server:
 'use strict'
 
 const RateLimiter = require('async-ratelimiter')
+const { getClientIp } = require('request-ip')
 const Redis = require('ioredis')
 
 const limit = new RateLimiter({
   db: new Redis()
 })
 
-const apiQuota = async (req, res, handler) => {
+const apiQuota = async (req, res, next) => {
+  const clientIp = getClientIp(req)
   const limit = await rateLimiter.get({ id: req.clientIp })
 
   if (!res.finished && !res.headersSent) {
@@ -46,13 +48,15 @@ const apiQuota = async (req, res, handler) => {
       code: HTTPStatus.TOO_MANY_REQUESTS,
       message: MESSAGES.RATE_LIMIT_EXCEDEED()
     })
-    : handler(req, res)
+    : next(req, res)
 }
 ```
 
 ## API
 
 ### constructor(options)
+
+It creates an rate limiter instance.
 
 #### options
 
@@ -103,28 +107,55 @@ Given an `id`, returns a Promise with the status of the limit with the following
 
 ##### id
 
+*Required*</br>
 Type: `string`
 
 The identifier to limit against (typically a user id).
 
 ##### max
 
-Type: `number`
+Type: `number`</br>
+Default: `this.max`
 
 The maximum number of requests within `duration`. If provided, it overrides the default `max` value. This is useful for custom limits that differ between IDs.
 
 ##### duration
 
-Type: `number`
+Type: `number`</br>
+Default: `this.max`
 
 How long keep records of requests in milliseconds. If provided, it overrides the default `duration` value.
 
 ##### decrease
 
-Type: `boolean`
+Type: `boolean`</br>
+Default: `true`
 
-When set to `false`, the remaining number of calls is not decreased. This is useful for just reading the remaining calls without actually decreasing them.
+When set to `false`, the remaining number of calls is not decreased.
 
+In some scenarios it might be useful to be able to read the current "remaining" value for a limiter.
+
+```js
+const loginHandler = async (req, res, next) => {
+  const clientIp = getClientIp(req)
+  const limit = await rateLimiter.get({ id: clientIp, decrease: false })
+
+  if (!limit.remaining) return sendError(req, res, 429)
+
+  try {
+    await doLogin(req)
+  } catch (err) {
+    if (err) {
+      await rateLimiter.get({ id: req.clientIp })
+      return sendError(req, res, 401)
+    }
+  }
+
+  next(req, res)
+}
+```
+
+In this example, new login attempts are rejected when more at least 10 unsuccessful login attempts happened in the last 60 seconds.
 
 ## License
 
