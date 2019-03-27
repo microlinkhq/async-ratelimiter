@@ -107,8 +107,8 @@ Given an `id`, returns a Promise with the status of the limit with the following
 
 ##### id
 
-*Required*</br>
 Type: `string`
+Default: `this.id`
 
 The identifier to limit against (typically a user id).
 
