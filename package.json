@@ -2,7 +2,7 @@
   "name": "async-ratelimiter",
   "description": "Rate limit made simple, easy, async.",
   "homepage": "https://documentup.com/microlinkhq/async-ratelimiter",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "main": "src/index.js",
   "author": {
     "email": "hello@microlink.io",
@@ -10,11 +10,26 @@
     "url": "https://microlink.io"
   },
   "contributors": [
-    "Kiko Beats <josefrancisco.verdu@gmail.com>",
-    "Marcus Poehls <marcus.poehls@gmail.com>",
-    "Ayan Yenbekbay <ayan.yenb@gmail.com>",
-    "Nico Kaiser <nico@kaiser.me>",
-    "amanda <amandalucis@gmail.com>"
+    {
+      "name": "Kiko Beats",
+      "email": "josefrancisco.verdu@gmail.com"
+    },
+    {
+      "name": "Marcus Poehls",
+      "email": "marcus.poehls@gmail.com"
+    },
+    {
+      "name": "Ayan Yenbekbay",
+      "email": "ayan.yenb@gmail.com"
+    },
+    {
+      "name": "Nico Kaiser",
+      "email": "nico@kaiser.me"
+    },
+    {
+      "name": "amanda",
+      "email": "amandalucis@gmail.com"
+    }
   ],
   "repository": {
     "type": "git",
