@@ -14,6 +14,7 @@ declare module 'async-ratelimiter' {
       id?: string;
       max?: number;
       duration?: number;
+      decrease?: boolean;
     }
 
     interface Status {
