@@ -39,9 +39,9 @@ module.exports = class Limiter {
     if (decrease) operations.splice(2, 0, ['zadd', key, now, now])
 
     const res = await this.db.multi(operations).exec()
-    const count = parseInt(res[1][1])
-    const oldest = parseInt(res[decrease ? 3 : 2][1])
-    const oldestInRange = parseInt(res[decrease ? 4 : 3][1])
+    const count = parseInt(res[1][1], 10)
+    const oldest = parseInt(res[decrease ? 3 : 2][1], 10)
+    const oldestInRange = parseInt(res[decrease ? 4 : 3][1], 10)
     const resetMicro =
       (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
 
