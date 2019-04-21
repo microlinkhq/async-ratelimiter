@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.3](https://github.com/microlinkhq/async-ratelimiter/compare/v1.2.2...v1.2.3) (2019-04-21)
+
+
+### Bug Fixes
+
+* specify parse int radix ([a8b29f0](https://github.com/microlinkhq/async-ratelimiter/commit/a8b29f0))
+
+
+
 <a name="1.2.2"></a>
 ## [1.2.2](https://github.com/microlinkhq/async-ratelimiter/compare/v1.2.1...v1.2.2) (2019-04-04)
 

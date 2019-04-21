@@ -2,7 +2,7 @@
   "name": "async-ratelimiter",
   "description": "Rate limit made simple, easy, async.",
   "homepage": "https://documentup.com/microlinkhq/async-ratelimiter",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "main": "src/index.js",
   "author": {
     "email": "hello@microlink.io",
