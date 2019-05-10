@@ -10,12 +10,30 @@
     "url": "https://microlink.io"
   },
   "contributors": [
-    "Kiko Beats <josefrancisco.verdu@gmail.com>",
-    "Marcus Poehls <marcus.poehls@gmail.com>",
-    "Ayan Yenbekbay <ayan.yenb@gmail.com>",
-    "Nico Kaiser <nico@kaiser.me>",
-    "amanda <amandalucis@gmail.com>",
-    "kornel-kedzierski <pl.kornel@gmail.com>"
+    {
+      "name": "Kiko Beats",
+      "email": "josefrancisco.verdu@gmail.com"
+    },
+    {
+      "name": "Marcus Poehls",
+      "email": "marcus.poehls@gmail.com"
+    },
+    {
+      "name": "Ayan Yenbekbay",
+      "email": "ayan.yenb@gmail.com"
+    },
+    {
+      "name": "Nico Kaiser",
+      "email": "nico@kaiser.me"
+    },
+    {
+      "name": "amanda",
+      "email": "amandalucis@gmail.com"
+    },
+    {
+      "name": "kornel-kedzierski",
+      "email": "pl.kornel@gmail.com"
+    }
   ],
   "repository": {
     "type": "git",
@@ -48,6 +66,7 @@
     "npm-check-updates": "latest",
     "nyc": "latest",
     "prettier-standard": "latest",
+    "promise-redis": "latest",
     "should": "latest",
     "standard": "11",
     "standard-markdown": "latest",

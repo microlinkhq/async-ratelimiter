@@ -7,9 +7,22 @@ const should = require('should')
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const RateLimiter = require('..')
-;['ioredis'].forEach(function (redisModuleName) {
-  let redisModule = require(redisModuleName)
-  let db = require(redisModuleName).createClient()
+
+const redisClients = {
+  ioredis () {
+    return require('ioredis').createClient()
+  },
+  'promise-redis' () {
+    return require('promise-redis')().createClient()
+  }
+}
+
+Object.keys(redisClients).forEach(function (redisModuleName) {
+  testWithRedisModule(redisModuleName, redisClients[redisModuleName])
+})
+
+function testWithRedisModule (redisModuleName, createClient) {
+  const db = createClient()
 
   describe('Limiter with ' + redisModuleName, function () {
     beforeEach(async function () {
@@ -195,7 +208,7 @@ const RateLimiter = require('..')
             duration: 10000,
             max: max,
             id: 'something',
-            db: redisModule.createClient()
+            db: createClient()
           })
         )
       }
@@ -249,7 +262,7 @@ const RateLimiter = require('..')
         duration: 10000,
         max: max,
         id: 'asyncsomething',
-        db: redisModule.createClient()
+        db: createClient()
       })
 
       it('should set the count properly without race conditions', async function () {
@@ -377,4 +390,4 @@ const RateLimiter = require('..')
       })
     })
   })
-})
+}

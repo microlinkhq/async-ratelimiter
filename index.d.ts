@@ -3,7 +3,7 @@ declare module 'async-ratelimiter' {
 
   namespace RateLimiter {
     interface ConstructorOptions {
-      db: Redis.Redis;
+      db: Redis.Redis | any;
       max?: number;
       duration?: number;
       namespace?: string;

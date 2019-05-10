@@ -16,12 +16,7 @@ module.exports = class Limiter {
     this.namespace = namespace
   }
 
-  async get ({
-    id = this.id,
-    max = this.max,
-    duration = this.duration,
-    decrease = true
-  } = {}) {
+  async get ({ id = this.id, max = this.max, duration = this.duration, decrease = true } = {}) {
     assert(id, 'id required')
     assert(max, 'max required')
     assert(duration, 'duration required')
@@ -41,11 +36,12 @@ module.exports = class Limiter {
     if (decrease) operations.splice(2, 0, ['zadd', key, now, now])
 
     const res = await this.db.multi(operations).exec()
-    const count = toNumber(res[1][1])
-    const oldest = toNumber(res[decrease ? 3 : 2][1])
-    const oldestInRange = toNumber(res[decrease ? 4 : 3][1])
-    const resetMicro =
-      (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
+
+    const isIoRedis = Array.isArray(res[0])
+    const count = toNumber(isIoRedis ? res[1][1] : res[1])
+    const oldest = toNumber(isIoRedis ? res[decrease ? 3 : 2][1] : res[decrease ? 3 : 2])
+    const oldestInRange = toNumber(isIoRedis ? res[decrease ? 4 : 3][1] : res[decrease ? 4 : 3])
+    const resetMicro = (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
 
     return {
       remaining: count < max ? max - count : 0,
