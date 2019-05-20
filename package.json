@@ -10,12 +10,30 @@
     "url": "https://microlink.io"
   },
   "contributors": [
-    "Kiko Beats <josefrancisco.verdu@gmail.com>",
-    "Marcus Poehls <marcus.poehls@gmail.com>",
-    "Ayan Yenbekbay <ayan.yenb@gmail.com>",
-    "Nico Kaiser <nico@kaiser.me>",
-    "amanda <amandalucis@gmail.com>",
-    "kornel-kedzierski <pl.kornel@gmail.com>"
+    {
+      "name": "Kiko Beats",
+      "email": "josefrancisco.verdu@gmail.com"
+    },
+    {
+      "name": "Marcus Poehls",
+      "email": "marcus.poehls@gmail.com"
+    },
+    {
+      "name": "Ayan Yenbekbay",
+      "email": "ayan.yenb@gmail.com"
+    },
+    {
+      "name": "Nico Kaiser",
+      "email": "nico@kaiser.me"
+    },
+    {
+      "name": "amanda",
+      "email": "amandalucis@gmail.com"
+    },
+    {
+      "name": "kornel-kedzierski",
+      "email": "pl.kornel@gmail.com"
+    }
   ],
   "repository": {
     "type": "git",
@@ -66,10 +84,9 @@
     "lint": "standard-markdown && standard",
     "postrelease": "npm run release:tags && npm run release:github && ci-publish",
     "precommit": "lint-staged",
-    "prerelease": "npm run update:check && git-authors-cli",
+    "prerelease": "npm run update:check",
     "pretest": "npm run lint",
-    "pretty": "prettier-standard index.js {core,test,bin,scripts}/**/*.js --single-quote --print-width 100",
-    "release": "git add package.json && standard-version -a",
+    "release": "git-authors-cli && git add package.json && standard-version -a",
     "release:github": "conventional-github-releaser -p angular",
     "release:tags": "git push --follow-tags origin HEAD:master",
     "test": "nyc mocha",
@@ -108,11 +125,6 @@
     "env": [
       "mocha"
     ]
-  },
-  "standard-version": {
-    "scripts": {
-      "prechangelog": "git-authors-cli"
-    }
   },
   "typings": "./index.d.ts"
 }
