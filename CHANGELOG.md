@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.5](https://github.com/microlinkhq/async-ratelimiter/compare/v1.2.4...v1.2.5) (2019-06-19)
+
+
+### Build System
+
+* update travis ([4f8a99d](https://github.com/microlinkhq/async-ratelimiter/commit/4f8a99d))
+
+
+
 ### [1.2.4](https://github.com/microlinkhq/async-ratelimiter/compare/v1.2.3...v1.2.4) (2019-06-12)
 
 
