@@ -2,7 +2,7 @@
   "name": "async-ratelimiter",
   "description": "Rate limit made simple, easy, async.",
   "homepage": "https://nicedoc.io/microlinkhq/async-ratelimiter",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "main": "src/index.js",
   "author": {
     "email": "hello@microlink.io",
@@ -15,7 +15,8 @@
     "Ayan Yenbekbay <ayan.yenb@gmail.com>",
     "Nico Kaiser <nico@kaiser.me>",
     "amanda <amandalucis@gmail.com>",
-    "kornel-kedzierski <pl.kornel@gmail.com>"
+    "kornel-kedzierski <pl.kornel@gmail.com>",
+    "offirmo <offirmo.net@gmail.com>"
   ],
   "repository": {
     "type": "git",
