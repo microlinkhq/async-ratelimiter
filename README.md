@@ -28,7 +28,7 @@ const RateLimiter = require('async-ratelimiter')
 const { getClientIp } = require('request-ip')
 const Redis = require('ioredis')
 
-const limit = new RateLimiter({
+const rateLimiter = new RateLimiter({
   db: new Redis()
 })
 
