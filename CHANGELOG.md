@@ -1,6 +1,52 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.2.6](https://github.com/microlinkhq/async-ratelimiter/compare/v1.2.4...v1.2.6) (2019-07-10)
+
+
+### Bug Fixes
+
+* typo ([becb50c](https://github.com/microlinkhq/async-ratelimiter/commit/becb50c))
+
+
+### Build System
+
+* update travis ([4f8a99d](https://github.com/microlinkhq/async-ratelimiter/commit/4f8a99d))
+
+
+
+### [1.2.5](https://github.com/microlinkhq/async-ratelimiter/compare/v1.2.4...v1.2.5) (2019-06-19)
+
+
+### Bug Fixes
+
+* typo ([becb50c](https://github.com/microlinkhq/async-ratelimiter/commit/becb50c))
+
+
+### Build System
+
+* update travis ([4f8a99d](https://github.com/microlinkhq/async-ratelimiter/commit/4f8a99d))
+
+
+
+### [1.2.4](https://github.com/microlinkhq/async-ratelimiter/compare/v1.2.3...v1.2.4) (2019-06-12)
+
+
+### Build System
+
+* meta tweaks ([1da925b](https://github.com/microlinkhq/async-ratelimiter/commit/1da925b))
+
+
+
+## [1.2.3](https://github.com/microlinkhq/async-ratelimiter/compare/v1.2.2...v1.2.3) (2019-04-21)
+
+
+### Bug Fixes
+
+* specify parse int radix ([a8b29f0](https://github.com/microlinkhq/async-ratelimiter/commit/a8b29f0))
+
+
 
 <a name="1.2.2"></a>
 ## [1.2.2](https://github.com/microlinkhq/async-ratelimiter/compare/v1.2.1...v1.2.2) (2019-04-04)
