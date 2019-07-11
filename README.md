@@ -157,6 +157,10 @@ const loginHandler = async (req, res, next) => {
 
 In this example, new login attempts are rejected when more at least 10 unsuccessful login attempts happened in the last 60 seconds.
 
+## Related
+
+- [express-slow-down](https://github.com/nfriedly/express-slow-down) – Slow down repeated requests; use as an alternative (or addition) to express-rate-limit.
+
 ## License
 
 **async-ratelimiter** © [microlink.io](https://microlink.io), released under the [MIT](https://github.com/microlinkhq/async-ratelimiter/blob/master/LICENSE.md) License.<br>
