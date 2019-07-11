@@ -41,11 +41,6 @@ module.exports = class Limiter {
     if (decrease) operations.splice(2, 0, ['zadd', key, now, now])
 
     const res = await this.db.multi(operations).exec()
-
-    res.forEach(([error]) => {
-      if (error) throw error
-    })
-
     const count = toNumber(res[1][1])
     const oldest = toNumber(res[decrease ? 3 : 2][1])
     const oldestInRange = toNumber(res[decrease ? 4 : 3][1])
