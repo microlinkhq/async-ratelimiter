@@ -2,7 +2,7 @@
   "name": "async-ratelimiter",
   "description": "Rate limit made simple, easy, async.",
   "homepage": "https://nicedoc.io/microlinkhq/async-ratelimiter",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "main": "src/index.js",
   "author": {
     "email": "hello@microlink.io",
