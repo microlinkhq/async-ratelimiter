@@ -1,4 +1,6 @@
-# async-ratelimiter
+<div align="center">
+  <img src="https://cdn.microlink.io/logo/banner.png" alt="microlink">
+</div>
 
 ![Last version](https://img.shields.io/github/tag/microlinkhq/async-ratelimiter.svg?style=flat-square)
 [![Build Status](https://img.shields.io/travis/microlinkhq/async-ratelimiter/master.svg?style=flat-square)](https://travis-ci.org/microlinkhq/async-ratelimiter)
@@ -8,8 +10,6 @@
 [![NPM Status](https://img.shields.io/npm/dm/async-ratelimiter.svg?style=flat-square)](https://www.npmjs.org/package/async-ratelimiter)
 
 > Rate limit made simple, easy, async. Based on [ratelimiter](https://github.com/tj/node-ratelimiter).
-
-> **NOTE**: It requires Redis 2.6.12+.
 
 ## Install
 
