@@ -8,8 +8,8 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const RateLimiter = require('..')
 ;['ioredis'].forEach(function (redisModuleName) {
-  let redisModule = require(redisModuleName)
-  let db = require(redisModuleName).createClient()
+  const redisModule = require(redisModuleName)
+  const db = require(redisModuleName).createClient()
 
   describe('Limiter with ' + redisModuleName, function () {
     beforeEach(async function () {
@@ -57,7 +57,7 @@ const RateLimiter = require('..')
           db
         })
         const res = await limit.get()
-        let left = res.reset - Date.now() / 1000
+        const left = res.reset - Date.now() / 1000
         should(left)
           .be.below(60)
           .and.be.greaterThan(0)
@@ -116,7 +116,7 @@ const RateLimiter = require('..')
 
         await delay(3000)
         res = await limit.get()
-        let left = res.reset - Date.now() / 1000
+        const left = res.reset - Date.now() / 1000
         should(left).be.below(2)
         should(res.remaining).equal(2)
       })
@@ -154,9 +154,9 @@ const RateLimiter = require('..')
           .pttl(['limit:something:reset'])
           .exec()
 
-        let ttlCount = typeof res[0] === 'number' ? res[0] : res[0][1]
-        let ttlLimit = typeof res[1] === 'number' ? res[1] : res[1][1]
-        let ttlReset = typeof res[2] === 'number' ? res[2] : res[2][1]
+        const ttlCount = typeof res[0] === 'number' ? res[0] : res[0][1]
+        const ttlLimit = typeof res[1] === 'number' ? res[1] : res[1][1]
+        const ttlReset = typeof res[2] === 'number' ? res[2] : res[2][1]
         ttlLimit.should.equal(ttlCount)
         ttlReset.should.equal(ttlCount)
       })
@@ -184,8 +184,8 @@ const RateLimiter = require('..')
     })
 
     describe('when multiple concurrent clients modify the limit', function () {
-      let clientsCount = 7
-      let max = 5
+      const clientsCount = 7
+      const max = 5
       let left = max
       const limits = []
 
@@ -201,14 +201,14 @@ const RateLimiter = require('..')
       }
 
       it('should prevent race condition and properly set the expected value', async function () {
-        let responses = []
+        const responses = []
 
         function complete () {
           responses.push(arguments)
 
           if (responses.length === clientsCount) {
             // If there were any errors, report.
-            let err = responses.some(function (res) {
+            const err = responses.some(function (res) {
               return res[0]
             })
 
@@ -231,7 +231,7 @@ const RateLimiter = require('..')
         }
 
         // Warm up and prepare the data.
-        let res = await limits[0].get()
+        const res = await limits[0].get()
         should(res.remaining).equal(left--)
 
         // Simulate multiple concurrent requests.
@@ -243,9 +243,8 @@ const RateLimiter = require('..')
 
     describe('when limiter is called in parallel by multiple clients', function () {
       let max = 6
-      let limiter
 
-      limiter = new RateLimiter({
+      const limiter = new RateLimiter({
         duration: 10000,
         max: max,
         id: 'asyncsomething',
