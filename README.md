@@ -3,10 +3,7 @@
 </div>
 
 ![Last version](https://img.shields.io/github/tag/microlinkhq/async-ratelimiter.svg?style=flat-square)
-[![Build Status](https://img.shields.io/travis/com/microlinkhq/async-ratelimiter/master.svg?style=flat-square)](https://travis-ci.com/microlinkhq/async-ratelimiter)
 [![Coverage Status](https://img.shields.io/coveralls/microlinkhq/async-ratelimiter.svg?style=flat-square)](https://coveralls.io/github/microlinkhq/async-ratelimiter)
-[![Dependency status](https://img.shields.io/david/microlinkhq/async-ratelimiter.svg?style=flat-square)](https://david-dm.org/microlinkhq/async-ratelimiter)
-[![Dev Dependencies Status](https://img.shields.io/david/dev/microlinkhq/async-ratelimiter.svg?style=flat-square)](https://david-dm.org/microlinkhq/async-ratelimiter#info=devDependencies)
 [![NPM Status](https://img.shields.io/npm/dm/async-ratelimiter.svg?style=flat-square)](https://www.npmjs.org/package/async-ratelimiter)
 
 > Rate limit made simple, easy, async. Based on [ratelimiter](https://github.com/tj/node-ratelimiter).
