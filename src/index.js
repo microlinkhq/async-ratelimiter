@@ -19,8 +19,7 @@ module.exports = class Limiter {
   async get ({
     id = this.id,
     max = this.max,
-    duration = this.duration,
-    decrease = true
+    duration = this.duration
   } = {}) {
     assert(id, 'id required')
     assert(max, 'max required')
@@ -33,24 +32,46 @@ module.exports = class Limiter {
     const operations = [
       ['zremrangebyscore', key, 0, start],
       ['zcard', key],
+      ['zadd', key, now, now],
       ['zrange', key, 0, 0],
       ['zrange', key, -max, -max],
+      ['zremrangebyrank', key, 0, -(max + 1)],
       ['pexpire', key, duration]
     ]
 
-    if (decrease) operations.splice(2, 0, ['zadd', key, now, now])
-
     const res = await this.db.multi(operations).exec()
-    const count = toNumber(res[1][1])
-    const oldest = toNumber(res[decrease ? 3 : 2][1])
-    const oldestInRange = toNumber(res[decrease ? 4 : 3][1])
-    const resetMicro =
-      (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
+    const isIoRedis = Array.isArray(res[0])
+    const count = toNumber(isIoRedis ? res[1][1] : res[1])
+    const oldest = toNumber(isIoRedis ? res[3][1] : res[3])
+    const oldestInRange = toNumber(isIoRedis ? res[4][1] : res[4])
+    const resetMicro = (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
 
     return {
       remaining: count < max ? max - count : 0,
       reset: Math.floor(resetMicro / 1000000),
+      resetMs: Math.floor(resetMicro / 1000),
       total: max
     }
   }
+}
+
+/**
+ * Check whether the first item of multi replies is null,
+ * works with ioredis and node_redis
+ *
+ * @param {Array} replies
+ * @return {Boolean}
+ * @api private
+ */
+/* eslint-disable-next-line */
+function isFirstReplyNull(replies) {
+  if (!replies) {
+    return true
+  }
+
+  return Array.isArray(replies[0])
+    // ioredis
+    ? !replies[0][1]
+    // node_redis
+    : !replies[0]
 }

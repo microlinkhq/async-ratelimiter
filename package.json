@@ -49,6 +49,7 @@
     "npm-check-updates": "latest",
     "nyc": "latest",
     "prettier-standard": "latest",
+    "redis": "latest",
     "should": "latest",
     "standard": "latest",
     "standard-markdown": "latest",
