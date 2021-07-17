@@ -330,7 +330,7 @@ const RateLimiter = require('..')
         let times = 6
         do {
           res = await limit.get()
-          ; (res.remaining > 0).should.be.true()
+          ;(res.remaining > 0).should.be.true()
           await delay(2000)
           times--
         } while (times > 0)
