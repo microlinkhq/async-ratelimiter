@@ -15,12 +15,20 @@
       "email": "josefrancisco.verdu@gmail.com"
     },
     {
+      "name": "Imed Jaberi",
+      "email": "imed_jebari@hotmail.fr"
+    },
+    {
       "name": "Marcus Poehls",
       "email": "marcus.poehls@gmail.com"
     },
     {
       "name": "Ayan Yenbekbay",
       "email": "ayan.yenb@gmail.com"
+    },
+    {
+      "name": "offirmo",
+      "email": "offirmo.net@gmail.com"
     },
     {
       "name": "Nico Kaiser",
@@ -33,10 +41,6 @@
     {
       "name": "kornel-kedzierski",
       "email": "pl.kornel@gmail.com"
-    },
-    {
-      "name": "offirmo",
-      "email": "offirmo.net@gmail.com"
     }
   ],
   "repository": {
