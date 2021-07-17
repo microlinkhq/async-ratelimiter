@@ -67,7 +67,6 @@
     "npm-check-updates": "latest",
     "nyc": "latest",
     "prettier-standard": "latest",
-    "redis": "latest",
     "should": "latest",
     "simple-git-hooks": "latest",
     "standard": "latest",
@@ -93,7 +92,7 @@
     "release": "standard-version -a",
     "release:github": "conventional-github-releaser -p angular",
     "release:tags": "git push --follow-tags origin HEAD:master",
-    "test": "nyc mocha",
+    "test": "nyc mocha --exit",
     "update": "ncu -u",
     "update:check": "ncu -- --error-level 2"
   },

@@ -8,7 +8,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const RateLimiter = require('..')
 
-  ;['redis', 'ioredis'].forEach(function (redisModuleName) {
+;['ioredis'].forEach(function (redisModuleName) {
   const redisModule = require(redisModuleName)
   const db = require(redisModuleName).createClient()
 
@@ -89,11 +89,14 @@ const RateLimiter = require('..')
           db
         })
 
-        await limit.get()
-        await limit.get()
-        await delay(1000)
         const { reset: originalReset } = await limit.get()
-        await delay(1000)
+        await limit.get()
+        await delay(200)
+        await limit.get()
+        await delay(200)
+        await limit.get()
+        await delay(200)
+        await limit.get()
         const { reset } = await limit.get()
         should(reset).be.greaterThan(originalReset)
       })

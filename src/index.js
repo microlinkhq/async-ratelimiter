@@ -16,11 +16,7 @@ module.exports = class Limiter {
     this.namespace = namespace
   }
 
-  async get ({
-    id = this.id,
-    max = this.max,
-    duration = this.duration
-  } = {}) {
+  async get ({ id = this.id, max = this.max, duration = this.duration } = {}) {
     assert(id, 'id required')
     assert(max, 'max required')
     assert(duration, 'duration required')
@@ -40,10 +36,9 @@ module.exports = class Limiter {
     ]
 
     const res = await this.db.multi(operations).exec()
-    const isIoRedis = Array.isArray(res[0])
-    const count = toNumber(isIoRedis ? res[1][1] : res[1])
-    const oldest = toNumber(isIoRedis ? res[3][1] : res[3])
-    const oldestInRange = toNumber(isIoRedis ? res[4][1] : res[4])
+    const count = toNumber(res[1][1])
+    const oldest = toNumber(res[3][1])
+    const oldestInRange = toNumber(res[4][1])
     const resetMicro = (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
 
     return {
@@ -52,25 +47,4 @@ module.exports = class Limiter {
       total: max
     }
   }
-}
-
-/**
- * Check whether the first item of multi replies is null,
- * works with ioredis and node_redis
- *
- * @param {Array} replies
- * @return {Boolean}
- * @api private
- */
-/* eslint-disable-next-line */
-function isFirstReplyNull(replies) {
-  if (!replies) {
-    return true
-  }
-
-  return Array.isArray(replies[0])
-    // ioredis
-    ? !replies[0][1]
-    // node_redis
-    : !replies[0]
 }
