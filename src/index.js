@@ -49,7 +49,6 @@ module.exports = class Limiter {
     return {
       remaining: count < max ? max - count : 0,
       reset: Math.floor(resetMicro / 1000000),
-      resetMs: Math.floor(resetMicro / 1000),
       total: max
     }
   }
