@@ -59,7 +59,7 @@ It creates an rate limiter instance.
 
 ##### db
 
-_Required_<br>
+*Required*<br>
 Type: `object`
 
 The redis connection instance.
