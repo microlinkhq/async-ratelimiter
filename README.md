@@ -100,7 +100,6 @@ Given an `id`, returns a Promise with the status of the limit with the following
 - `total`: `max` value.
 - `remaining`: number of calls left in current `duration` without decreasing current `get`.
 - `reset`: time since epoch in seconds that the rate limiting period will end (or already ended).
-- `resetMs`: time since epoch in milliseconds that the rate limiting period will end (or already ended).
 
 #### options
 
