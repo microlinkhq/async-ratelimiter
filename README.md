@@ -1,5 +1,5 @@
-<div align="center">
-  <img src="https://cdn.microlink.io/logo/banner.png" alt="microlink">
+<div align='center'>
+  <img src='https://cdn.microlink.io/logo/banner.png' alt='microlink'>
 </div>
 
 ![Last version](https://img.shields.io/github/tag/microlinkhq/async-ratelimiter.svg?style=flat-square)
@@ -19,35 +19,34 @@ $ npm install async-ratelimiter --save
 A simple middleware implementation for whatever HTTP server:
 
 ```js
-"use strict";
+'use strict'
 
-const RateLimiter = require("async-ratelimiter");
-const { getClientIp } = require("request-ip");
-const Redis = require("ioredis");
+const RateLimiter = require('async-ratelimiter')
+const { getClientIp } = require('request-ip')
+const Redis = require('ioredis')
 
 const rateLimiter = new RateLimiter({
-  db: new Redis(),
-});
+  db: new Redis()
+})
 
 const apiQuota = async (req, res, next) => {
-  const clientIp = getClientIp(req);
-  const limit = await rateLimiter.get({ id: req.clientIp });
+  const clientIp = getClientIp(req)
+  const limit = await rateLimiter.get({ id: req.clientIp })
 
   if (!res.finished && !res.headersSent) {
-    res.setHeader("X-Rate-Limit-Limit", limit.total);
-    res.setHeader("X-Rate-Limit-Remaining", Math.max(0, limit.remaining - 1));
-    res.setHeader("X-Rate-Limit-Reset", limit.reset);
+    res.setHeader('X-Rate-Limit-Limit', limit.total)
+    res.setHeader('X-Rate-Limit-Remaining', Math.max(0, limit.remaining - 1))
+    res.setHeader('X-Rate-Limit-Reset', limit.reset)
   }
 
   return !limit.remaining
     ? sendFail({
-        req,
-        res,
-        code: HTTPStatus.TOO_MANY_REQUESTS,
-        message: MESSAGES.RATE_LIMIT_EXCEDEED(),
-      })
-    : next(req, res);
-};
+      req,
+      res,
+      code: HTTPStatus.TOO_MANY_REQUESTS,
+      message: MESSAGES.RATE_LIMIT_EXCEDEED()
+    }) : next(req, res)
+}
 ```
 
 ## API
