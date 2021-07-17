@@ -10,13 +10,34 @@
     "url": "https://microlink.io"
   },
   "contributors": [
-    "Kiko Beats <josefrancisco.verdu@gmail.com>",
-    "Marcus Poehls <marcus.poehls@gmail.com>",
-    "Ayan Yenbekbay <ayan.yenb@gmail.com>",
-    "Nico Kaiser <nico@kaiser.me>",
-    "amanda <amandalucis@gmail.com>",
-    "kornel-kedzierski <pl.kornel@gmail.com>",
-    "offirmo <offirmo.net@gmail.com>"
+    {
+      "name": "Kiko Beats",
+      "email": "josefrancisco.verdu@gmail.com"
+    },
+    {
+      "name": "Marcus Poehls",
+      "email": "marcus.poehls@gmail.com"
+    },
+    {
+      "name": "Ayan Yenbekbay",
+      "email": "ayan.yenb@gmail.com"
+    },
+    {
+      "name": "Nico Kaiser",
+      "email": "nico@kaiser.me"
+    },
+    {
+      "name": "amanda",
+      "email": "amandalucis@gmail.com"
+    },
+    {
+      "name": "kornel-kedzierski",
+      "email": "pl.kornel@gmail.com"
+    },
+    {
+      "name": "offirmo",
+      "email": "offirmo.net@gmail.com"
+    }
   ],
   "repository": {
     "type": "git",
@@ -38,18 +59,17 @@
     "@commitlint/config-conventional": "latest",
     "ci-publish": "latest",
     "conventional-github-releaser": "latest",
-    "coveralls": "latest",
     "finepack": "latest",
     "git-authors-cli": "latest",
-    "git-dirty": "latest",
-    "husky": "latest",
     "ioredis": "latest",
     "lint-staged": "latest",
     "mocha": "latest",
     "npm-check-updates": "latest",
     "nyc": "latest",
     "prettier-standard": "latest",
+    "redis": "latest",
     "should": "latest",
+    "simple-git-hooks": "latest",
     "standard": "latest",
     "standard-markdown": "latest",
     "standard-version": "latest"
@@ -63,13 +83,14 @@
   ],
   "scripts": {
     "clean": "rm -rf node_modules",
+    "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "standard-markdown README.md && standard",
-    "postrelease": "npm run release:tags && npm run release:github && ci-publish --access=public",
+    "postrelease": "npm run release:tags && npm run release:github && (ci-publish || npm publish --access=public)",
     "precommit": "lint-staged",
-    "prerelease": "npm run update:check",
+    "prerelease": "npm run update:check && npm run contributors",
     "pretest": "npm run lint",
-    "release": "git-authors-cli finepack && git add package.json && standard-version -a",
+    "release": "standard-version -a",
     "release:github": "conventional-github-releaser -p angular",
     "release:tags": "git push --follow-tags origin HEAD:master",
     "test": "nyc mocha",
@@ -82,25 +103,20 @@
       "@commitlint/config-conventional"
     ]
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "package.json": [
-      "finepack",
-      "git add"
+      "finepack"
     ],
-    "*.js": [
-      "prettier-standard",
-      "git add"
+    "*.js,!*.min.js,": [
+      "prettier-standard"
     ],
     "*.md": [
-      "standard-markdown",
-      "git add"
+      "standard-markdown"
     ]
+  },
+  "simple-git-hooks": {
+    "commit-msg": "npx commitlint --edit",
+    "pre-commit": "npx lint-staged"
   },
   "standard": {
     "env": [

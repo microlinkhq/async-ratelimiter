@@ -7,7 +7,8 @@ const should = require('should')
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const RateLimiter = require('..')
-;['ioredis'].forEach(function (redisModuleName) {
+
+  ;['redis', 'ioredis'].forEach(function (redisModuleName) {
   const redisModule = require(redisModuleName)
   const db = require(redisModuleName).createClient()
 
@@ -159,27 +160,6 @@ const RateLimiter = require('..')
         const ttlReset = typeof res[2] === 'number' ? res[2] : res[2][1]
         ttlLimit.should.equal(ttlCount)
         ttlReset.should.equal(ttlCount)
-      })
-    })
-
-    describe('when trying to decrease before setting value', function () {
-      it('should create with ttl when trying to decrease', async function () {
-        const limit = new RateLimiter({
-          duration: 10000,
-          max: 2,
-          id: 'something',
-          db
-        })
-
-        db.setex('limit:something:count', -1, 1, async function () {
-          let res
-          res = await limit.get()
-          should(res.remaining).equal(2)
-          res = await limit.get()
-          should(res.remaining).equal(1)
-          res = await limit.get()
-          should(res.remaining).equal(0)
-        })
       })
     })
 
@@ -354,25 +334,6 @@ const RateLimiter = require('..')
           await delay(2000)
           times--
         } while (times > 0)
-      })
-    })
-
-    describe('when get is called with decrease == false', function () {
-      it('should not decrement the remaining value', async function () {
-        const limit = new RateLimiter({
-          max: 5,
-          duration: 100000,
-          id: 'something',
-          db
-        })
-
-        let res
-        res = await limit.get({ decrease: false })
-        should(res.remaining).equal(5)
-        res = await limit.get({ decrease: false })
-        should(res.remaining).equal(5)
-        res = await limit.get({ decrease: false })
-        should(res.remaining).equal(5)
       })
     })
   })

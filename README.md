@@ -45,8 +45,7 @@ const apiQuota = async (req, res, next) => {
       res,
       code: HTTPStatus.TOO_MANY_REQUESTS,
       message: MESSAGES.RATE_LIMIT_EXCEDEED()
-    })
-    : next(req, res)
+    }) : next(req, res)
 }
 ```
 
@@ -97,9 +96,10 @@ You can pass this value using when you use `.get` method as well.
 ### .get(options)
 
 Given an `id`, returns a Promise with the status of the limit with the following structure:
-  - `total`: `max` value.
-  - `remaining`: number of calls left in current `duration` without decreasing current `get`.
-  - `reset`: time since epoch in seconds that the rate limiting period will end (or already ended).
+
+- `total`: `max` value.
+- `remaining`: number of calls left in current `duration` without decreasing current `get`.
+- `reset`: time since epoch in seconds that the rate limiting period will end (or already ended).
 
 #### options
 
@@ -123,37 +123,6 @@ Type: `number`</br>
 Default: `this.max`
 
 How long keep records of requests in milliseconds. If provided, it overrides the default `duration` value.
-
-##### decrease
-
-Type: `boolean`</br>
-Default: `true`
-
-When set to `false`, the remaining number of calls is not decreased.
-
-In some scenarios it might be useful to be able to read the current "remaining" value for a limiter.
-
-```js
-const loginHandler = async (req, res, next) => {
-  const clientIp = getClientIp(req)
-  const limit = await rateLimiter.get({ id: clientIp, decrease: false })
-
-  if (!limit.remaining) return sendError(req, res, 429)
-
-  try {
-    await doLogin(req)
-  } catch (err) {
-    if (err) {
-      await rateLimiter.get({ id: req.clientIp })
-      return sendError(req, res, 401)
-    }
-  }
-
-  next(req, res)
-}
-```
-
-In this example, new login attempts are rejected when more at least 10 unsuccessful login attempts happened in the last 60 seconds.
 
 ## Related
 
