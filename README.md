@@ -33,7 +33,7 @@ const rateLimiter = new RateLimiter({
 
 const apiQuota = async (req, res, next) => {
   const clientIp = getClientIp(req)
-  const limit = await rateLimiter.get({ id: req.clientIp })
+  const limit = await rateLimiter.get({ id: clientIp })
 
   if (!res.finished && !res.headersSent) {
     res.setHeader('X-Rate-Limit-Limit', limit.total)
