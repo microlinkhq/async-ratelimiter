@@ -43,11 +43,12 @@ const apiQuota = async (req, res, next) => {
 
   return !limit.remaining
     ? sendFail({
-      req,
-      res,
-      code: HTTPStatus.TOO_MANY_REQUESTS,
-      message: MESSAGES.RATE_LIMIT_EXCEDEED()
-    }) : next(req, res)
+        req,
+        res,
+        code: HTTPStatus.TOO_MANY_REQUESTS,
+        message: MESSAGES.RATE_LIMIT_EXCEDEED()
+      })
+    : next(req, res)
 }
 ```
 
@@ -61,7 +62,7 @@ It creates an rate limiter instance.
 
 ##### db
 
-*Required*<br>
+_Required_<br>
 Type: `object`
 
 The redis connection instance.
