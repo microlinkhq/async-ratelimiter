@@ -66,7 +66,7 @@
     "finepack": "latest",
     "git-authors-cli": "latest",
     "ioredis": "latest",
-    "lint-staged": "latest",
+    "nano-staged": "latest",
     "mocha": "latest",
     "npm-check-updates": "latest",
     "nyc": "latest",
@@ -90,7 +90,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "standard-markdown README.md && standard",
     "postrelease": "npm run release:tags && npm run release:github && (ci-publish || npm publish --access=public)",
-    "precommit": "lint-staged",
+    "precommit": "nano-staged",
     "prerelease": "npm run update:check && npm run contributors",
     "pretest": "npm run lint",
     "release": "standard-version -a",
@@ -106,7 +106,7 @@
       "@commitlint/config-conventional"
     ]
   },
-  "lint-staged": {
+  "nano-staged": {
     "package.json": [
       "finepack"
     ],
@@ -119,7 +119,7 @@
   },
   "simple-git-hooks": {
     "commit-msg": "npx commitlint --edit",
-    "pre-commit": "npx lint-staged"
+    "pre-commit": "npx nano-staged"
   },
   "standard": {
     "env": [
