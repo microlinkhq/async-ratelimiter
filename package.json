@@ -69,7 +69,7 @@
     "nano-staged": "latest",
     "mocha": "latest",
     "npm-check-updates": "latest",
-    "nyc": "latest",
+    "c8": "latest",
     "prettier-standard": "latest",
     "should": "latest",
     "simple-git-hooks": "latest",
@@ -87,7 +87,6 @@
   "scripts": {
     "clean": "rm -rf node_modules",
     "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "standard-markdown README.md && standard",
     "postrelease": "npm run release:tags && npm run release:github && (ci-publish || npm publish --access=public)",
     "precommit": "nano-staged",
@@ -96,7 +95,7 @@
     "release": "standard-version -a",
     "release:github": "conventional-github-releaser -p angular",
     "release:tags": "git push --follow-tags origin HEAD:master",
-    "test": "nyc mocha --exit",
+    "test": "c8 mocha --exit",
     "update": "ncu -u",
     "update:check": "ncu -- --error-level 2"
   },
