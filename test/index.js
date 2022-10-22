@@ -98,7 +98,7 @@ const RateLimiter = require('..')
         await delay(200)
         await limit.get()
         const { reset } = await limit.get()
-        should(reset).be.greaterThan(originalReset)
+        should(reset).be.greaterThanOrEqual(originalReset)
       })
     })
 
@@ -176,7 +176,7 @@ const RateLimiter = require('..')
         limits.push(
           new RateLimiter({
             duration: 10000,
-            max: max,
+            max,
             id: 'something',
             db: redisModule.createClient()
           })
@@ -229,7 +229,7 @@ const RateLimiter = require('..')
 
       const limiter = new RateLimiter({
         duration: 10000,
-        max: max,
+        max,
         id: 'asyncsomething',
         db: redisModule.createClient()
       })
