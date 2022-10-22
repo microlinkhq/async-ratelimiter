@@ -98,7 +98,7 @@ const RateLimiter = require('..')
         await delay(200)
         await limit.get()
         const { reset } = await limit.get()
-        should(reset).be.greaterThan(originalReset)
+        should(reset).be.greaterThanOrEqual(originalReset)
       })
     })
 
