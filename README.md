@@ -35,7 +35,7 @@ const apiQuota = async (req, res, next) => {
   const clientIp = getClientIp(req)
   const limit = await rateLimiter.get({ id: clientIp })
 
-  if (!res.finished && !res.headersSent) {
+  if (!res.writableEnded) {
     res.setHeader('X-Rate-Limit-Limit', limit.total)
     res.setHeader('X-Rate-Limit-Remaining', Math.max(0, limit.remaining - 1))
     res.setHeader('X-Rate-Limit-Reset', limit.reset)
