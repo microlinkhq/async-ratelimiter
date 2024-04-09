@@ -19,31 +19,38 @@ module.exports = class Limiter {
     assert(max, 'max required')
     assert(duration, 'duration required')
 
-    const key = `${this.namespace}:${id}`
-    const now = microtime.now()
-    const start = now - duration * 1000
+    const result = await this.db.eval(
+      `
+      local key = KEYS[1]
+      local now = tonumber(ARGV[1])
+      local duration = tonumber(ARGV[2])
+      local max = tonumber(ARGV[3])
+      local start = now - duration * 1000
 
-    const operations = [
-      ['zremrangebyscore', key, 0, start],
-      ['zcard', key],
-      ['zadd', key, now, now],
-      ['zrange', key, 0, 0],
-      ['zrange', key, -max, -max],
-      ['zremrangebyrank', key, 0, -(max + 1)],
-      ['pexpire', key, duration]
-    ]
+      redis.call('zremrangebyscore', key, 0, start)
+      local count = redis.call('zcard', key)
 
-    const res = await this.db.multi(operations).exec()
+      redis.call('zadd', key, now, now)
+      local oldest = tonumber(redis.call('zrange', key, 0, 0)[1] or now)
+      local oldestInRange = tonumber(redis.call('zrange', key, -max, -max)[1] or now)
+      local resetMicro = (oldestInRange ~= now and oldestInRange or oldest) + duration * 1000
 
-    const count = Number(res[1][1])
-    const oldest = Number(res[3][1][0])
-    const oldestInRange = Number(res[4][1][0])
-    const resetMicro = (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
+      redis.call('zremrangebyrank', key, 0, -(max + 1))
+      redis.call('pexpire', key, duration)
+
+      return {max - count, resetMicro / 1000000, max}
+      `,
+      1,
+      `${this.namespace}:${id}`,
+      microtime.now(),
+      duration,
+      max
+    )
 
     return {
-      remaining: count < max ? max - count : 0,
-      reset: Math.floor(resetMicro / 1000000),
-      total: max
+      remaining: result[0],
+      reset: Math.floor(result[1]),
+      total: result[2]
     }
   }
 }
