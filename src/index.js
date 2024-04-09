@@ -4,8 +4,6 @@ const assert = require('assert')
 
 const microtime = require('./microtime')
 
-const toNumber = str => parseInt(str, 10)
-
 module.exports = class Limiter {
   constructor ({ id, db, max = 2500, duration = 3600000, namespace = 'limit' }) {
     assert(db, 'db required')
@@ -36,9 +34,10 @@ module.exports = class Limiter {
     ]
 
     const res = await this.db.multi(operations).exec()
-    const count = toNumber(res[1][1])
-    const oldest = toNumber(res[3][1])
-    const oldestInRange = toNumber(res[4][1])
+
+    const count = Number(res[1][1])
+    const oldest = Number(res[3][1][0])
+    const oldestInRange = Number(res[4][1][0])
     const resetMicro = (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
 
     return {
