@@ -76,9 +76,8 @@ module.exports = class Limiter {
           resetMicro = oldest + duration * 1000
         end
 
-        -- Set expiration using the provided duration
-        redis.call('PEXPIRE', key, duration)
-
+        -- Set expiration using the provided duration in milliseconds
+        redis.call('PEXPIRE', key, duration * 1000)
         return {remaining, math.floor(resetMicro / 1000000), max}
       `
     })
