@@ -19,7 +19,7 @@ module.exports = class Limiter {
         local now = tonumber(ARGV[1])
         local duration = tonumber(ARGV[2])
         local max = tonumber(ARGV[3])
-        local start = now - duration * 1000
+        local start = now - duration
 
         -- Check if the key exists
         local exists = redis.call('EXISTS', key)
@@ -46,8 +46,8 @@ module.exports = class Limiter {
 
         -- Early return if already at limit
         if remaining <= 0 then
-          local resetMicro = oldest + duration * 1000
-          return {0, math.floor(resetMicro / 1000000), max}
+          local resetMicro = oldest + duration
+          return {0, math.floor(resetMicro / 1000), max}
         end
 
         -- Add current request with current timestamp
@@ -70,15 +70,16 @@ module.exports = class Limiter {
           redis.call('ZREMRANGEBYRANK', key, 0, -(max + 1))
 
           -- Calculate reset time based on the entry at position -max
-          resetMicro = oldestInRange + duration * 1000
+          resetMicro = oldestInRange + duration
         else
           -- We're under the limit, use the oldest entry for reset time
-          resetMicro = oldest + duration * 1000
+          resetMicro = oldest + duration
         end
 
-        -- Set expiration using the provided duration in milliseconds
-        redis.call('PEXPIRE', key, duration * 1000)
-        return {remaining, math.floor(resetMicro / 1000000), max}
+        -- Set expiration using the provided duration
+        redis.call('PEXPIRE', key, duration)
+
+        return {remaining, math.floor(resetMicro / 1000), max}
       `
     })
   }
