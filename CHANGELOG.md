@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.4.0 (2025-04-08)
+
+
+### Features
+
+* implemented using lua ([#49](https://github.com/microlinkhq/async-ratelimiter/issues/49)) ([e28c9fc](https://github.com/microlinkhq/async-ratelimiter/commit/e28c9fc72ae232fb253b10053c476ffb7f6bb0cd))
+
 ### 1.3.11 (2024-05-07)
 
 ### 1.3.10 (2024-04-09)
