@@ -1,7 +1,6 @@
 'use strict'
 
 const assert = require('assert')
-
 const microtime = require('./microtime')
 
 module.exports = class Limiter {
@@ -12,6 +11,77 @@ module.exports = class Limiter {
     this.max = max
     this.duration = duration
     this.namespace = namespace
+
+    this.db.defineCommand('ratelimiter', {
+      numberOfKeys: 1,
+      lua: `
+        local key = KEYS[1]
+        local now = tonumber(ARGV[1])
+        local duration = tonumber(ARGV[2])
+        local max = tonumber(ARGV[3])
+        local start = now - duration
+
+        -- Check if the key exists
+        local exists = redis.call('EXISTS', key)
+
+        local count = 0
+        local oldest = now
+
+        if exists == 1 then
+          -- Remove expired entries based on the current duration
+          redis.call('ZREMRANGEBYSCORE', key, 0, start)
+
+          -- Get count
+          count = redis.call('ZCARD', key)
+
+          -- Get oldest timestamp if we have entries
+          if count > 0 then
+            local oldest_result = redis.call('ZRANGE', key, 0, 0)
+            oldest = tonumber(oldest_result[1])
+          end
+        end
+
+        -- Calculate remaining (before adding current request)
+        local remaining = max - count
+
+        -- Early return if already at limit
+        if remaining <= 0 then
+          local resetMicro = oldest + duration
+          return {0, math.floor(resetMicro / 1000), max}
+        end
+
+        -- Add current request with current timestamp
+        redis.call('ZADD', key, now, now)
+
+        -- Calculate reset time and handle trimming if needed
+        local resetMicro
+
+        -- Only perform trim if we're at or over max (based on count before adding)
+        if count >= max then
+          -- Get the entry at position -max for reset time calculation
+          local oldest_in_range_result = redis.call('ZRANGE', key, -max, -max)
+          local oldestInRange = oldest
+
+          if #oldest_in_range_result > 0 then
+            oldestInRange = tonumber(oldest_in_range_result[1])
+          end
+
+          -- Trim the set
+          redis.call('ZREMRANGEBYRANK', key, 0, -(max + 1))
+
+          -- Calculate reset time based on the entry at position -max
+          resetMicro = oldestInRange + duration
+        else
+          -- We're under the limit, use the oldest entry for reset time
+          resetMicro = oldest + duration
+        end
+
+        -- Set expiration using the provided duration
+        redis.call('PEXPIRE', key, duration)
+
+        return {remaining, math.floor(resetMicro / 1000), max}
+      `
+    })
   }
 
   async get ({ id = this.id, max = this.max, duration = this.duration } = {}) {
@@ -19,31 +89,17 @@ module.exports = class Limiter {
     assert(max, 'max required')
     assert(duration, 'duration required')
 
-    const key = `${this.namespace}:${id}`
-    const now = microtime.now()
-    const start = now - duration * 1000
-
-    const operations = [
-      ['zremrangebyscore', key, 0, start],
-      ['zcard', key],
-      ['zadd', key, now, now],
-      ['zrange', key, 0, 0],
-      ['zrange', key, -max, -max],
-      ['zremrangebyrank', key, 0, -(max + 1)],
-      ['pexpire', key, duration]
-    ]
-
-    const res = await this.db.multi(operations).exec()
-
-    const count = Number(res[1][1])
-    const oldest = Number(res[3][1][0])
-    const oldestInRange = Number(res[4][1][0])
-    const resetMicro = (Number.isNaN(oldestInRange) ? oldest : oldestInRange) + duration * 1000
+    const result = await this.db.ratelimiter(
+      `${this.namespace}:${id}`,
+      microtime.now(),
+      duration,
+      max
+    )
 
     return {
-      remaining: count < max ? max - count : 0,
-      reset: Math.floor(resetMicro / 1000000),
-      total: max
+      remaining: result[0],
+      reset: Math.floor(result[1]),
+      total: result[2]
     }
   }
 }
