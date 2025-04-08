@@ -7,7 +7,7 @@ const { performance } = require('perf_hooks')
 // Configuration
 const CONFIG = {
   // Benchmark settings
-  iterations: 10000,
+  iterations: 100000,
   concurrency: 100,
   warmup: 1000,
   // Rate limiter settings
