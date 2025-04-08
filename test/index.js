@@ -4,7 +4,7 @@
 
 const should = require('should')
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+const { setTimeout } = require('timers/promises')
 
 const RateLimiter = require('..')
 
@@ -59,9 +59,7 @@ const RateLimiter = require('..')
         })
         const res = await limit.get()
         const left = res.reset - Date.now() / 1000
-        should(left)
-          .be.below(60)
-          .and.be.greaterThan(0)
+        should(left).be.below(60).and.be.greaterThan(0)
       })
     })
 
@@ -91,11 +89,11 @@ const RateLimiter = require('..')
 
         const { reset: originalReset } = await limit.get()
         await limit.get()
-        await delay(200)
+        await setTimeout(200)
         await limit.get()
-        await delay(200)
+        await setTimeout(200)
         await limit.get()
-        await delay(200)
+        await setTimeout(200)
         await limit.get()
         const { reset } = await limit.get()
         should(reset).be.greaterThanOrEqual(originalReset)
@@ -118,7 +116,7 @@ const RateLimiter = require('..')
         res = await limit.get()
         should(res.remaining).equal(1)
 
-        await delay(3000)
+        await setTimeout(3000)
         res = await limit.get()
         const left = res.reset - Date.now() / 1000
         should(left).be.below(2)
@@ -312,9 +310,7 @@ const RateLimiter = require('..')
         res = await limit.get()
         should(res.remaining).equal(4)
         left = res.reset - Date.now() / 1000
-        should(left)
-          .be.below(25)
-          .and.be.above(10)
+        should(left).be.below(25).and.be.above(10)
       })
     })
 
@@ -334,7 +330,7 @@ const RateLimiter = require('..')
         do {
           res = await limit.get()
           ;(res.remaining > 0).should.be.true()
-          await delay(2000)
+          await setTimeout(2000)
           times--
         } while (times > 0)
       })
