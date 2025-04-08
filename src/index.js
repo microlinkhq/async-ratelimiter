@@ -1,7 +1,6 @@
 'use strict'
 
 const assert = require('assert')
-
 const microtime = require('./microtime')
 
 module.exports = class Limiter {
@@ -12,6 +11,57 @@ module.exports = class Limiter {
     this.max = max
     this.duration = duration
     this.namespace = namespace
+
+    this.db.defineCommand('ratelimiter', {
+      numberOfKeys: 1,
+      lua: `
+        local key = KEYS[1]
+        local now = tonumber(ARGV[1])
+        local duration = tonumber(ARGV[2])
+        local max = tonumber(ARGV[3])
+        local start = now - duration * 1000
+
+        -- Remove expired entries
+        redis.call('zremrangebyscore', key, 0, start)
+
+        -- Get current count
+        local count = redis.call('zcard', key)
+
+        -- Calculate remaining
+        local remaining = max - count
+
+        -- Add current request
+        redis.call('zadd', key, now, now)
+
+        -- Optimize: Only fetch oldest entry if we need it
+        local oldest
+        local oldest_result = redis.call('zrange', key, 0, 0)
+        oldest = #oldest_result > 0 and tonumber(oldest_result[1]) or now
+
+        -- Optimize: Only fetch oldestInRange if count is at or above max
+        local oldestInRange = now
+        if count >= max then
+          local oldest_in_range_result = redis.call('zrange', key, -max, -max)
+          oldestInRange = #oldest_in_range_result > 0 and tonumber(oldest_in_range_result[1]) or now
+        end
+
+        -- Calculate reset time
+        local resetMicro = (oldestInRange ~= now and oldestInRange or oldest) + duration * 1000
+
+        -- Optimize: Only trim if necessary
+        if count >= max then
+          redis.call('zremrangebyrank', key, 0, -(max + 1))
+        end
+
+        -- Set expiration
+        redis.call('pexpire', key, duration)
+
+        -- Ensure remaining is never negative
+        if remaining < 0 then remaining = 0 end
+
+        return {remaining, resetMicro / 1000000, max}
+      `
+    })
   }
 
   async get ({ id = this.id, max = this.max, duration = this.duration } = {}) {
@@ -19,28 +69,7 @@ module.exports = class Limiter {
     assert(max, 'max required')
     assert(duration, 'duration required')
 
-    const result = await this.db.eval(
-      `
-      local key = KEYS[1]
-      local now = tonumber(ARGV[1])
-      local duration = tonumber(ARGV[2])
-      local max = tonumber(ARGV[3])
-      local start = now - duration * 1000
-
-      redis.call('zremrangebyscore', key, 0, start)
-      local count = redis.call('zcard', key)
-
-      redis.call('zadd', key, now, now)
-      local oldest = tonumber(redis.call('zrange', key, 0, 0)[1] or now)
-      local oldestInRange = tonumber(redis.call('zrange', key, -max, -max)[1] or now)
-      local resetMicro = (oldestInRange ~= now and oldestInRange or oldest) + duration * 1000
-
-      redis.call('zremrangebyrank', key, 0, -(max + 1))
-      redis.call('pexpire', key, duration)
-
-      return {max - count, resetMicro / 1000000, max}
-      `,
-      1,
+    const result = await this.db.ratelimiter(
       `${this.namespace}:${id}`,
       microtime.now(),
       duration,
