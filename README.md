@@ -128,6 +128,17 @@ Default: `this.max`
 
 How long keep records of requests in milliseconds. If provided, it overrides the default `duration` value.
 
+## defineCommand
+
+It provides the command definition so you can load it into any [ioredis](https://github.com/redis/ioredis) instance:
+
+```js
+const Redis = require('ioredis')
+const redis = new Redis(uri, {
+  scripts: { ratelimiter: require('async-ratelimiter').defineCommand }
+})
+```
+
 ## Related
 
 - [express-slow-down](https://github.com/nfriedly/express-slow-down) – Slow down repeated requests; use as an alternative (or addition) to express-rate-limit.
