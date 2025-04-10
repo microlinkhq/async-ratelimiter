@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.5.0 (2025-04-10)
+
+
+### Features
+
+* add defineCommand ([#51](https://github.com/microlinkhq/async-ratelimiter/issues/51)) ([db75ce1](https://github.com/microlinkhq/async-ratelimiter/commit/db75ce140d665ebc216f515d13260c01ae728259))
+
 ## 1.4.0 (2025-04-08)
 
 
