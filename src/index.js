@@ -3,7 +3,7 @@
 const assert = require('assert')
 const microtime = require('./microtime')
 
-const defineCommand = {
+const ratelimiter = {
   numberOfKeys: 1,
   lua: `
     local key = KEYS[1]
@@ -83,7 +83,7 @@ module.exports = class Limiter {
     this.duration = duration
     this.namespace = namespace
     if (!this.db.ratelimiter) {
-      this.db.defineCommand('ratelimiter', defineCommand)
+      this.db.defineCommand('ratelimiter', ratelimiter)
     }
   }
 
@@ -107,4 +107,4 @@ module.exports = class Limiter {
   }
 }
 
-module.exports.defineCommand = defineCommand
+module.exports.defineCommand = { ratelimiter }

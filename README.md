@@ -135,7 +135,7 @@ It provides the command definition so you can load it into any [ioredis](https:/
 ```js
 const Redis = require('ioredis')
 const redis = new Redis(uri, {
-  scripts: { ratelimiter: require('async-ratelimiter').defineCommand }
+  scripts: { ...require('async-ratelimiter').defineCommand }
 })
 ```
 
