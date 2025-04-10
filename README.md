@@ -128,7 +128,7 @@ Default: `this.max`
 
 How long keep records of requests in milliseconds. If provided, it overrides the default `duration` value.
 
-## defineCommand
+### defineCommand
 
 It provides the command definition so you can load it into any [ioredis](https://github.com/redis/ioredis) instance:
 
