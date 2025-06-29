@@ -125,6 +125,46 @@ const RateLimiter = require('..')
     })
 
     describe('when multiple successive calls are made', function () {
+      describe('.peek', function () {
+        it('should return the current status without incrementing the count', async function () {
+          const limit = new RateLimiter({
+            max: 3,
+            duration: 10000,
+            id: 'peektest',
+            db
+          })
+
+          // Initial peek, should be full
+          let res = await limit.peek()
+          should(res.remaining).equal(3)
+          should(res.total).equal(3)
+          // After a get, remaining should decrease
+          await limit.get()
+          res = await limit.peek()
+          should(res.remaining).equal(2)
+          // After another get, remaining should decrease again
+          await limit.get()
+          res = await limit.peek()
+          should(res.remaining).equal(1)
+          // Peek should not decrement
+          res = await limit.peek()
+          should(res.remaining).equal(1)
+        })
+
+        it('should support custom options', async function () {
+          const limit = new RateLimiter({
+            max: 2,
+            duration: 5000,
+            id: 'peekcustom',
+            db
+          })
+          let res = await limit.peek({ max: 5 })
+          should(res.remaining).equal(5)
+          should(res.total).equal(5)
+          res = await limit.peek({ duration: 10000 })
+          should(res.total).equal(2) // max from constructor
+        })
+      })
       it('the next calls should not create again the limiter in Redis', async function () {
         const limit = new RateLimiter({
           duration: 10000,

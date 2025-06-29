@@ -23,9 +23,11 @@ declare module 'async-ratelimiter' {
     }
   }
 
+
   class RateLimiter {
     constructor(options: RateLimiter.ConstructorOptions)
     get(options: RateLimiter.GetOptions): Promise<RateLimiter.Status>
+    peek(options?: RateLimiter.GetOptions): Promise<RateLimiter.Status>
   }
 
   export = RateLimiter
