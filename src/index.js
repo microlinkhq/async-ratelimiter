@@ -74,7 +74,52 @@ const ratelimiter = {
   `
 }
 
-module.exports = class Limiter {
+const ratelimiterPeek = {
+  numberOfKeys: 1,
+  lua: `
+    local key = KEYS[1]
+    local now = tonumber(ARGV[1])
+    local duration = tonumber(ARGV[2])
+    local max = tonumber(ARGV[3])
+    local start = now - duration
+
+    -- Check if the key exists
+    local exists = redis.call('EXISTS', key)
+
+    local count = 0
+    local oldest = now
+
+    if exists == 1 then
+      -- Remove expired entries based on the current duration
+      redis.call('ZREMRANGEBYSCORE', key, 0, start)
+
+      -- Get count
+      count = redis.call('ZCARD', key)
+
+      -- Get oldest timestamp if we have entries
+      if count > 0 then
+        local oldest_result = redis.call('ZRANGE', key, 0, 0)
+        oldest = tonumber(oldest_result[1])
+      end
+    end
+
+    -- Calculate remaining (without adding current request)
+    local remaining = max - count
+
+    -- Early return if already at limit
+    if remaining <= 0 then
+      local resetMicro = oldest + duration
+      return {0, math.floor(resetMicro / 1000), max}
+    end
+
+    -- Calculate reset time
+    local resetMicro = oldest + duration
+
+    return {remaining, math.floor(resetMicro / 1000), max}
+  `
+}
+
+class Limiter {
   constructor ({ id, db, max = 2500, duration = 3600000, namespace = 'limit' }) {
     assert(db, 'db required')
     this.db = db
@@ -84,6 +129,9 @@ module.exports = class Limiter {
     this.namespace = namespace
     if (!this.db.ratelimiter) {
       this.db.defineCommand('ratelimiter', ratelimiter)
+    }
+    if (!this.db.ratelimiterPeek) {
+      this.db.defineCommand('ratelimiterPeek', ratelimiterPeek)
     }
   }
 
@@ -105,6 +153,26 @@ module.exports = class Limiter {
       total: result[2]
     }
   }
+
+  async peek ({ id = this.id, max = this.max, duration = this.duration } = {}) {
+    assert(id, 'id required')
+    assert(max, 'max required')
+    assert(duration, 'duration required')
+
+    const result = await this.db.ratelimiterPeek(
+      `${this.namespace}:${id}`,
+      microtime.now(),
+      duration,
+      max
+    )
+
+    return {
+      remaining: result[0],
+      reset: Math.floor(result[1]),
+      total: result[2]
+    }
+  }
 }
 
-module.exports.defineCommand = { ratelimiter }
+module.exports = Limiter
+module.exports.defineCommand = { ratelimiter, ratelimiterPeek }
