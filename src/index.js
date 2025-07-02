@@ -3,10 +3,17 @@
 const assert = require('assert')
 const microtime = require('./microtime')
 
-// Common logic for both ratelimiter and peek operations
-const commonRateLimiterLogic = `
-  local function getStateAndCleanup(key, now, duration, max)
+const ratelimiter = {
+  numberOfKeys: 1,
+  lua: `
+    local key = KEYS[1]
+    local now = tonumber(ARGV[1])
+    local duration = tonumber(ARGV[2])
+    local max = tonumber(ARGV[3])
+    local peek = ARGV[4] == '1'
     local start = now - duration
+
+    -- Check if the key exists
     local exists = redis.call('EXISTS', key)
 
     local count = 0
@@ -26,50 +33,25 @@ const commonRateLimiterLogic = `
       end
     end
 
-    return count, oldest
-  end
-
-  local function calculateResetTime(count, oldest, duration, max, hasNewEntry)
-    -- If we have entries at or over the limit, use more sophisticated logic
-    if count >= max or (hasNewEntry and count + 1 > max) then
-      -- Use the oldest entry that would remain after trimming
-      return oldest + duration
-    else
-      -- We're under the limit, use the oldest entry for reset time
-      return oldest + duration
-    end
-  end
-`
-
-const ratelimiter = {
-  numberOfKeys: 1,
-  lua: `
-    ${commonRateLimiterLogic}
-
-    local key = KEYS[1]
-    local now = tonumber(ARGV[1])
-    local duration = tonumber(ARGV[2])
-    local max = tonumber(ARGV[3])
-
-    local count, oldest = getStateAndCleanup(key, now, duration, max)
-
-    -- Calculate remaining (before adding current request)
+    -- Calculate remaining (before adding current request if not peeking)
     local remaining = max - count
 
     -- Early return if already at limit
     if remaining <= 0 then
-      local resetMicro = calculateResetTime(count, oldest, duration, max, false)
+      local resetMicro = oldest + duration
       return {0, math.floor(resetMicro / 1000), max}
     end
 
-    -- Add current request with current timestamp
-    redis.call('ZADD', key, now, now)
+    -- If not peeking, add current request with current timestamp
+    if not peek then
+      redis.call('ZADD', key, now, now)
+    end
 
     -- Calculate reset time and handle trimming if needed
     local resetMicro
 
-    -- Only perform trim if we're at or over max (based on count before adding)
-    if count >= max then
+    -- Only perform trim if we're at or over max and not peeking
+    if not peek and count >= max then
       -- Get the entry at position -max for reset time calculation
       local oldest_in_range_result = redis.call('ZRANGE', key, -max, -max)
       local oldestInRange = oldest
@@ -84,40 +66,14 @@ const ratelimiter = {
       -- Calculate reset time based on the entry at position -max
       resetMicro = oldestInRange + duration
     else
-      -- We're under the limit, use the oldest entry for reset time
+      -- We're under the limit or peeking, use the oldest entry for reset time
       resetMicro = oldest + duration
     end
 
-    -- Set expiration using the provided duration
-    redis.call('PEXPIRE', key, duration)
-
-    return {remaining, math.floor(resetMicro / 1000), max}
-  `
-}
-
-const ratelimiterPeek = {
-  numberOfKeys: 1,
-  lua: `
-    ${commonRateLimiterLogic}
-
-    local key = KEYS[1]
-    local now = tonumber(ARGV[1])
-    local duration = tonumber(ARGV[2])
-    local max = tonumber(ARGV[3])
-
-    local count, oldest = getStateAndCleanup(key, now, duration, max)
-
-    -- Calculate remaining (without adding current request)
-    local remaining = max - count
-
-    -- Early return if already at limit
-    if remaining <= 0 then
-      local resetMicro = calculateResetTime(count, oldest, duration, max, false)
-      return {0, math.floor(resetMicro / 1000), max}
+    -- Set expiration using the provided duration (only if not peeking)
+    if not peek then
+      redis.call('PEXPIRE', key, duration)
     end
-
-    -- Calculate reset time using the same logic as the main ratelimiter
-    local resetMicro = calculateResetTime(count, oldest, duration, max, false)
 
     return {remaining, math.floor(resetMicro / 1000), max}
   `
@@ -134,12 +90,9 @@ class Limiter {
     if (!this.db.ratelimiter) {
       this.db.defineCommand('ratelimiter', ratelimiter)
     }
-    if (!this.db.ratelimiterPeek) {
-      this.db.defineCommand('ratelimiterPeek', ratelimiterPeek)
-    }
   }
 
-  async get ({ id = this.id, max = this.max, duration = this.duration } = {}) {
+  async get ({ id = this.id, max = this.max, duration = this.duration, peek = false } = {}) {
     assert(id, 'id required')
     assert(max, 'max required')
     assert(duration, 'duration required')
@@ -148,26 +101,8 @@ class Limiter {
       `${this.namespace}:${id}`,
       microtime.now(),
       duration,
-      max
-    )
-
-    return {
-      remaining: result[0],
-      reset: Math.floor(result[1]),
-      total: result[2]
-    }
-  }
-
-  async peek ({ id = this.id, max = this.max, duration = this.duration } = {}) {
-    assert(id, 'id required')
-    assert(max, 'max required')
-    assert(duration, 'duration required')
-
-    const result = await this.db.ratelimiterPeek(
-      `${this.namespace}:${id}`,
-      microtime.now(),
-      duration,
-      max
+      max,
+      peek ? '1' : '0'
     )
 
     return {
@@ -179,4 +114,4 @@ class Limiter {
 }
 
 module.exports = Limiter
-module.exports.defineCommand = { ratelimiter, ratelimiterPeek }
+module.exports.defineCommand = { ratelimiter }

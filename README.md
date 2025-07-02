@@ -34,22 +34,29 @@ const rateLimiter = new RateLimiter({
 
 const apiQuota = async (req, res, next) => {
   const clientIp = getClientIp(req)
+
+  // Check rate limit status without consuming a request
+  const status = await rateLimiter.get({ id: clientIp, peek: true })
+
+  if (status.remaining === 0) {
+    return sendFail({
+      req,
+      res,
+      code: HTTPStatus.TOO_MANY_REQUESTS,
+      message: MESSAGES.RATE_LIMIT_EXCEDEED()
+    })
+  }
+
+  // Consume a request
   const limit = await rateLimiter.get({ id: clientIp })
 
   if (!res.writableEnded) {
     res.setHeader('X-Rate-Limit-Limit', limit.total)
-    res.setHeader('X-Rate-Limit-Remaining', Math.max(0, limit.remaining - 1))
+    res.setHeader('X-Rate-Limit-Remaining', limit.remaining)
     res.setHeader('X-Rate-Limit-Reset', limit.reset)
   }
 
-  return !limit.remaining
-    ? sendFail({
-        req,
-        res,
-        code: HTTPStatus.TOO_MANY_REQUESTS,
-        message: MESSAGES.RATE_LIMIT_EXCEDEED()
-      })
-    : next(req, res)
+  return next(req, res)
 }
 ```
 
@@ -124,9 +131,16 @@ The maximum number of requests within `duration`. If provided, it overrides the 
 ##### duration
 
 Type: `number`</br>
-Default: `this.max`
+Default: `this.duration`
 
 How long keep records of requests in milliseconds. If provided, it overrides the default `duration` value.
+
+##### peek
+
+Type: `boolean`<br>
+Default: `false`
+
+When set to `true`, returns the current rate limit status **without consuming a request**. This is useful for checking the current rate limit status before deciding whether to proceed with an operation.
 
 ### defineCommand
 

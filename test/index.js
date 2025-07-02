@@ -135,19 +135,19 @@ const RateLimiter = require('..')
           })
 
           // Initial peek, should be full
-          let res = await limit.peek()
+          let res = await limit.get({ peek: true })
           should(res.remaining).equal(3)
           should(res.total).equal(3)
           // After a get, remaining should decrease
           await limit.get()
-          res = await limit.peek()
+          res = await limit.get({ peek: true })
           should(res.remaining).equal(2)
           // After another get, remaining should decrease again
           await limit.get()
-          res = await limit.peek()
+          res = await limit.get({ peek: true })
           should(res.remaining).equal(1)
           // Peek should not decrement
-          res = await limit.peek()
+          res = await limit.get({ peek: true })
           should(res.remaining).equal(1)
         })
 
@@ -158,10 +158,10 @@ const RateLimiter = require('..')
             id: 'peekcustom',
             db
           })
-          let res = await limit.peek({ max: 5 })
+          let res = await limit.get({ max: 5, peek: true })
           should(res.remaining).equal(5)
           should(res.total).equal(5)
-          res = await limit.peek({ duration: 10000 })
+          res = await limit.get({ duration: 10000, peek: true })
           should(res.total).equal(2) // max from constructor
         })
       })
