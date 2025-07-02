@@ -14,6 +14,7 @@ declare module 'async-ratelimiter' {
       id?: string
       max?: number
       duration?: number
+      peek?: boolean
     }
 
     interface Status {
@@ -23,9 +24,10 @@ declare module 'async-ratelimiter' {
     }
   }
 
+
   class RateLimiter {
     constructor(options: RateLimiter.ConstructorOptions)
-    get(options: RateLimiter.GetOptions): Promise<RateLimiter.Status>
+    get(options?: RateLimiter.GetOptions): Promise<RateLimiter.Status>
   }
 
   export = RateLimiter

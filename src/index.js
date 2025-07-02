@@ -10,6 +10,7 @@ const ratelimiter = {
     local now = tonumber(ARGV[1])
     local duration = tonumber(ARGV[2])
     local max = tonumber(ARGV[3])
+    local peek = ARGV[4] == '1'
     local start = now - duration
 
     -- Check if the key exists
@@ -32,7 +33,7 @@ const ratelimiter = {
       end
     end
 
-    -- Calculate remaining (before adding current request)
+    -- Calculate remaining (before adding current request if not peeking)
     local remaining = max - count
 
     -- Early return if already at limit
@@ -41,14 +42,16 @@ const ratelimiter = {
       return {0, math.floor(resetMicro / 1000), max}
     end
 
-    -- Add current request with current timestamp
-    redis.call('ZADD', key, now, now)
+    -- If not peeking, add current request with current timestamp
+    if not peek then
+      redis.call('ZADD', key, now, now)
+    end
 
     -- Calculate reset time and handle trimming if needed
     local resetMicro
 
-    -- Only perform trim if we're at or over max (based on count before adding)
-    if count >= max then
+    -- Only perform trim if we're at or over max and not peeking
+    if not peek and count >= max then
       -- Get the entry at position -max for reset time calculation
       local oldest_in_range_result = redis.call('ZRANGE', key, -max, -max)
       local oldestInRange = oldest
@@ -63,18 +66,20 @@ const ratelimiter = {
       -- Calculate reset time based on the entry at position -max
       resetMicro = oldestInRange + duration
     else
-      -- We're under the limit, use the oldest entry for reset time
+      -- We're under the limit or peeking, use the oldest entry for reset time
       resetMicro = oldest + duration
     end
 
-    -- Set expiration using the provided duration
-    redis.call('PEXPIRE', key, duration)
+    -- Set expiration using the provided duration (only if not peeking)
+    if not peek then
+      redis.call('PEXPIRE', key, duration)
+    end
 
     return {remaining, math.floor(resetMicro / 1000), max}
   `
 }
 
-module.exports = class Limiter {
+class Limiter {
   constructor ({ id, db, max = 2500, duration = 3600000, namespace = 'limit' }) {
     assert(db, 'db required')
     this.db = db
@@ -87,7 +92,7 @@ module.exports = class Limiter {
     }
   }
 
-  async get ({ id = this.id, max = this.max, duration = this.duration } = {}) {
+  async get ({ id = this.id, max = this.max, duration = this.duration, peek = false } = {}) {
     assert(id, 'id required')
     assert(max, 'max required')
     assert(duration, 'duration required')
@@ -96,7 +101,8 @@ module.exports = class Limiter {
       `${this.namespace}:${id}`,
       microtime.now(),
       duration,
-      max
+      max,
+      peek ? '1' : '0'
     )
 
     return {
@@ -107,4 +113,5 @@ module.exports = class Limiter {
   }
 }
 
+module.exports = Limiter
 module.exports.defineCommand = { ratelimiter }
