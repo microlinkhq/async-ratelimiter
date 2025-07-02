@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.6.0 (2025-07-02)
+
+
+### Features
+
+* add `{ peek: true }` ([#54](https://github.com/microlinkhq/async-ratelimiter/issues/54)) ([362a65a](https://github.com/microlinkhq/async-ratelimiter/commit/362a65a80fcff5f15440f794a61de01feacb93c7))
+
 ### 1.5.2 (2025-04-10)
 
 ### 1.5.1 (2025-04-10)
