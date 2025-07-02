@@ -19,7 +19,7 @@ $ npm install async-ratelimiter --save
 
 ## Usage
 
-A simple middleware implementation for whatever HTTP server:
+The most straightforward way to use the rate limiter:
 
 ```js
 'use strict'
@@ -32,6 +32,29 @@ const rateLimiter = new RateLimiter({
   db: new Redis()
 })
 
+const apiQuota = async (req, res, next) => {
+  const clientIp = getClientIp(req)
+  const limit = await rateLimiter.get({ id: clientIp })
+
+  if (!res.writableEnded) {
+    res.setHeader('X-Rate-Limit-Limit', limit.total)
+    res.setHeader('X-Rate-Limit-Remaining', Math.max(0, limit.remaining - 1))
+    res.setHeader('X-Rate-Limit-Reset', limit.reset)
+  }
+
+  return !limit.remaining
+    ? sendFail({
+        req,
+        res,
+        code: HTTPStatus.TOO_MANY_REQUESTS,
+        message: MESSAGES.RATE_LIMIT_EXCEDEED()
+      })
+    : next(req, res)
+}
+```
+For scenarios where you want to check the limit status before consuming a request, you should to pass `{ peek: true }`:
+
+```js
 const apiQuota = async (req, res, next) => {
   const clientIp = getClientIp(req)
 
@@ -59,6 +82,8 @@ const apiQuota = async (req, res, next) => {
   return next(req, res)
 }
 ```
+
+
 
 ## API
 
