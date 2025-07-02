@@ -2,7 +2,7 @@
   "name": "async-ratelimiter",
   "description": "Rate limit made simple, easy, async.",
   "homepage": "https://github.com/microlinkhq/async-ratelimiter",
-  "version": "1.6.0",
+  "version": "1.5.2",
   "main": "src/index.js",
   "author": {
     "email": "hello@microlink.io",
@@ -13,46 +13,6 @@
     {
       "name": "Kiko Beats",
       "email": "josefrancisco.verdu@gmail.com"
-    },
-    {
-      "name": "3imed-jaberi",
-      "email": "imed_jebari@hotmail.fr"
-    },
-    {
-      "name": "Marcus Poehls",
-      "email": "marcus.poehls@gmail.com"
-    },
-    {
-      "name": "Ayan Yenbekbay",
-      "email": "ayan.yenb@gmail.com"
-    },
-    {
-      "name": "Behlül Uçar",
-      "email": "ucarbehlul@gmail.com"
-    },
-    {
-      "name": "Andrew",
-      "email": "5755685+arnidan@users.noreply.github.com"
-    },
-    {
-      "name": "amanda",
-      "email": "amandalucis@gmail.com"
-    },
-    {
-      "name": "Loren",
-      "email": "loren138@users.noreply.github.com"
-    },
-    {
-      "name": "Nico Kaiser",
-      "email": "nico@kaiser.me"
-    },
-    {
-      "name": "offirmo",
-      "email": "offirmo.net@gmail.com"
-    },
-    {
-      "name": "kornel-kedzierski",
-      "email": "pl.kornel@gmail.com"
     }
   ],
   "repository": {

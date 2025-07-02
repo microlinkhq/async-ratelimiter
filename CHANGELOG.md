@@ -2,13 +2,6 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [1.6.0](https://github.com/microlinkhq/async-ratelimiter/compare/v1.5.2...v1.6.0) (2025-06-29)
-
-
-### Features
-
-* add peek function to index.js ([c86e5d4](https://github.com/microlinkhq/async-ratelimiter/commit/c86e5d48649aa59275826e2e2b59d3e5dce42d08))
-
 ### 1.5.2 (2025-04-10)
 
 ### 1.5.1 (2025-04-10)
