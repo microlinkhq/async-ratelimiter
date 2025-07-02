@@ -3,16 +3,10 @@
 const assert = require('assert')
 const microtime = require('./microtime')
 
-const ratelimiter = {
-  numberOfKeys: 1,
-  lua: `
-    local key = KEYS[1]
-    local now = tonumber(ARGV[1])
-    local duration = tonumber(ARGV[2])
-    local max = tonumber(ARGV[3])
+// Common logic for both ratelimiter and peek operations
+const commonRateLimiterLogic = `
+  local function getStateAndCleanup(key, now, duration, max)
     local start = now - duration
-
-    -- Check if the key exists
     local exists = redis.call('EXISTS', key)
 
     local count = 0
@@ -32,12 +26,39 @@ const ratelimiter = {
       end
     end
 
+    return count, oldest
+  end
+
+  local function calculateResetTime(count, oldest, duration, max, hasNewEntry)
+    -- If we have entries at or over the limit, use more sophisticated logic
+    if count >= max or (hasNewEntry and count + 1 > max) then
+      -- Use the oldest entry that would remain after trimming
+      return oldest + duration
+    else
+      -- We're under the limit, use the oldest entry for reset time
+      return oldest + duration
+    end
+  end
+`
+
+const ratelimiter = {
+  numberOfKeys: 1,
+  lua: `
+    ${commonRateLimiterLogic}
+
+    local key = KEYS[1]
+    local now = tonumber(ARGV[1])
+    local duration = tonumber(ARGV[2])
+    local max = tonumber(ARGV[3])
+
+    local count, oldest = getStateAndCleanup(key, now, duration, max)
+
     -- Calculate remaining (before adding current request)
     local remaining = max - count
 
     -- Early return if already at limit
     if remaining <= 0 then
-      local resetMicro = oldest + duration
+      local resetMicro = calculateResetTime(count, oldest, duration, max, false)
       return {0, math.floor(resetMicro / 1000), max}
     end
 
@@ -77,43 +98,26 @@ const ratelimiter = {
 const ratelimiterPeek = {
   numberOfKeys: 1,
   lua: `
+    ${commonRateLimiterLogic}
+
     local key = KEYS[1]
     local now = tonumber(ARGV[1])
     local duration = tonumber(ARGV[2])
     local max = tonumber(ARGV[3])
-    local start = now - duration
 
-    -- Check if the key exists
-    local exists = redis.call('EXISTS', key)
-
-    local count = 0
-    local oldest = now
-
-    if exists == 1 then
-      -- Remove expired entries based on the current duration
-      redis.call('ZREMRANGEBYSCORE', key, 0, start)
-
-      -- Get count
-      count = redis.call('ZCARD', key)
-
-      -- Get oldest timestamp if we have entries
-      if count > 0 then
-        local oldest_result = redis.call('ZRANGE', key, 0, 0)
-        oldest = tonumber(oldest_result[1])
-      end
-    end
+    local count, oldest = getStateAndCleanup(key, now, duration, max)
 
     -- Calculate remaining (without adding current request)
     local remaining = max - count
 
     -- Early return if already at limit
     if remaining <= 0 then
-      local resetMicro = oldest + duration
+      local resetMicro = calculateResetTime(count, oldest, duration, max, false)
       return {0, math.floor(resetMicro / 1000), max}
     end
 
-    -- Calculate reset time
-    local resetMicro = oldest + duration
+    -- Calculate reset time using the same logic as the main ratelimiter
+    local resetMicro = calculateResetTime(count, oldest, duration, max, false)
 
     return {remaining, math.floor(resetMicro / 1000), max}
   `
