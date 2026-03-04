@@ -4,6 +4,7 @@
   "homepage": "https://github.com/microlinkhq/async-ratelimiter",
   "version": "1.6.4",
   "main": "src/index.js",
+  "types": "index.d.ts",
   "author": {
     "email": "hello@microlink.io",
     "name": "microlink.io",
