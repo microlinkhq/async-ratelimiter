@@ -69,7 +69,7 @@
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
-    "@ksmithut/prettier-standard": "latest",
+
     "c8": "latest",
     "ci-publish": "latest",
     "finepack": "latest",
@@ -114,7 +114,6 @@
   },
   "nano-staged": {
     "*.js": [
-      "prettier-standard",
       "standard --fix"
     ],
     "package.json": [
