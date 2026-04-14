@@ -69,7 +69,6 @@
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
-
     "c8": "latest",
     "ci-publish": "latest",
     "finepack": "latest",
