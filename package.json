@@ -2,7 +2,7 @@
   "name": "async-ratelimiter",
   "description": "Simple async rate limiter for Node.js — promise-friendly limits for APIs and workers.",
   "homepage": "https://github.com/microlinkhq/async-ratelimiter",
-  "version": "1.6.9",
+  "version": "1.6.10",
   "main": "src/index.js",
   "author": {
     "email": "hello@microlink.io",
