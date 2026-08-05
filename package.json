@@ -1,6 +1,6 @@
 {
   "name": "async-ratelimiter",
-  "description": "Rate limit made simple, easy, async.",
+  "description": "Simple async rate limiter for Node.js — promise-friendly limits for APIs and workers.",
   "homepage": "https://github.com/microlinkhq/async-ratelimiter",
   "version": "1.6.9",
   "main": "src/index.js",
@@ -59,12 +59,16 @@
     "url": "https://github.com/microlinkhq/async-ratelimiter/issues"
   },
   "keywords": [
+    "api",
     "async",
-    "limit",
+    "concurrency",
     "limiter",
     "promise",
-    "rate",
-    "ratelimit"
+    "rate-limit",
+    "ratelimiter",
+    "redis",
+    "throttle",
+    "token-bucket"
   ],
   "devDependencies": {
     "@commitlint/cli": "latest",
