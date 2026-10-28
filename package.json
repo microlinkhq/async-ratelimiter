@@ -94,6 +94,7 @@
     "src"
   ],
   "scripts": {
+    "benchmark": "node benchmark/index.js",
     "clean": "rm -rf node_modules",
     "contributors": "(npx git-authors-cli && npx finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
     "lint": "standard",
