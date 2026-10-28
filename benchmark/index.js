@@ -10,11 +10,11 @@ const RateLimiter = require('..')
 
 const RUNS = 7
 const CONCURRENCY = 100
-const FRESH_IDS = 5000
-const FILL_MAX = 5000
+const FRESH_IDS = 10000
+const FILL_MAX = 10000
 const LIMITED_MAX = 100
-const LIMITED_CALLS = 5000
-const PEEK_CALLS = 5000
+const LIMITED_CALLS = 10000
+const PEEK_CALLS = 10000
 const DURATION_MS = 60000
 
 const median = values => {
