@@ -34,3 +34,6 @@ coverage
 # Other
 ############################
 .envrc
+benchmark-output.json
+head-output.json
+cache/
