@@ -49,7 +49,8 @@ const freshIdsCase = {
   timed: async ({ limiter, nextId }) => {
     const prefix = nextId()
     const limits = await inBatches(FRESH_IDS, index => limiter.get({ id: `${prefix}:${index}` }))
-    return limits.filter(limit => limit.remaining === limiter.max).length
+    return limits.filter(limit => limit.remaining === limiter.max && limit.total === limiter.max)
+      .length
   },
   verify: fresh => fresh === FRESH_IDS
 }
@@ -72,7 +73,7 @@ const limitedCase = {
     const id = nextId()
     await exhaust(limiter, id, LIMITED_MAX)
     const limits = await inBatches(LIMITED_CALLS, () => limiter.get({ id, max: LIMITED_MAX }))
-    return limits.filter(limit => limit.remaining === 0).length
+    return limits.filter(limit => limit.remaining === 0 && limit.total === LIMITED_MAX).length
   },
   verify: limited => limited === LIMITED_CALLS
 }
@@ -88,7 +89,9 @@ const peekCase = {
     const limits = await inBatches(PEEK_CALLS, () =>
       limiter.get({ id, max: LIMITED_MAX, peek: true })
     )
-    return limits.filter(limit => limit.remaining === LIMITED_MAX / 2).length
+    return limits.filter(
+      limit => limit.remaining === LIMITED_MAX / 2 && limit.total === LIMITED_MAX
+    ).length
   },
   verify: peeked => peeked === PEEK_CALLS
 }
