@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.6.11 (2026-10-29)
+
+
+### Bug Fixes
+
+* declare the real minimum Node.js version ([#72](https://github.com/microlinkhq/async-ratelimiter/issues/72)) ([569a457](https://github.com/microlinkhq/async-ratelimiter/commit/569a457a5b4bfe86dbe81fbbec24555e9bcf651d))
+
 ### 1.6.10 (2026-08-05)
 
 ### 1.6.9 (2026-08-03)
